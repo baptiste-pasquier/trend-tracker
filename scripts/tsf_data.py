@@ -35,7 +35,7 @@ def get_wordnet_pos(tag):
 		return wordnet.NOUN
 
 
-def text_preprocessing(tweet, fg_stop_words=False, fg_lemmatization=False):
+def text_cleaning(tweet, fg_stop_words=False, fg_lemmatization=False):
     """
         Clean/Transform the text of a tweet
         
@@ -65,9 +65,9 @@ def text_preprocessing(tweet, fg_stop_words=False, fg_lemmatization=False):
     # Extract @tag and #tag
     mentions = re.findall(r'@(\w+)',tweet)
     hashtags = re.findall(r'#(\w+)',tweet)
-    #Remove them
-    tweet = re.sub(r'@','',tweet)
-    tweet = re.sub(r'#','',tweet)
+    #Remove them and special chars
+    tweet = re.sub('[^A-Za-z0-9]+', ' ', tweet)
+
     
     # remove contractions
     tweet = ' '.join([contractions.fix(x) for x in tweet.split()])
@@ -87,30 +87,30 @@ def text_preprocessing(tweet, fg_stop_words=False, fg_lemmatization=False):
         wordnet_lemmatizer = WordNetLemmatizer()
         tweet = [wordnet_lemmatizer.lemmatize(word, tag) for (word, tag) in tweet]
 
-    return tweet,mentions,hashtags
+    return " ".join(tweet),mentions,hashtags
 
 
 
 def main():
 	producer = KafkaProducer(
 		bootstrap_servers=BOOTSTRAP_ENDPOINT,
-		value_serializer=lambda m: json.dumps(m).encode("utf8"))
+		value_serializer=lambda m: json.dumps(m).encode("utf-8"))
 	#Call a Consumer to retrieve the raw tweets
 	consumer = KafkaConsumer(RAW_TOPIC, 
 		bootstrap_servers=BOOTSTRAP_ENDPOINT,
-		group_id = GROUP_ID)
+		group_id = GROUP_ID,
+		value_deserializer = lambda m: json.loads(m.decode('utf-8')))
 
 	#Preprocess the tweets 
 	for data in consumer:
-		data = json.loads(data.value)
+		data = data.value
 		print(data['text'])
 		print("tsf")
-		data['text'],data['mentions'],data['hashtags'] = text_preprocessing(data['text'])
+		data['text'],data['mentions'],data['hashtags'] = text_cleaning(data['text'])
 		print(data['text'],data['mentions'],data['hashtags'])
 
 		#Send the preprocessed data 
 		producer.send(CLEAN_TOPIC,data)
-		print(f"Sending message to topic: {CLEAN_TOPIC}\n{data}\n")
 
 		time.sleep(TIME_SLEEP)
 
