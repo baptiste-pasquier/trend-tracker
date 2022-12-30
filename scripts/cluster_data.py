@@ -6,6 +6,8 @@ import time
 from ingest_tweets import BOOTSTRAP_ENDPOINT
 from tsf_data import CLEAN_TOPIC, GROUP_ID
 
+CLUSTER_TOPIC = "cluster_texts"
+
 
 def main():
 	
@@ -35,6 +37,7 @@ def main():
 		data['cluster'] = model.predict_one(data["text"])
 		model = model.learn_one(data["text"])
 		print(data['cluster'])
+		producer.send(CLUSTER_TOPIC,data)
 
 	
 
