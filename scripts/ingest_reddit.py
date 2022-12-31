@@ -1,10 +1,11 @@
 import requests
 import pandas as pd 
 
-CLIENT_ID = "d1zoC0vsGifocPWgvQY5Kg"#Put it in env var
-SECRET_TOKEN = "BBLpyQHrTe3Uu1rnRD5bmT-60yvQsA" 
-USERNAME = 'parisian_bot'
-REDDIT_PASSWORD = "16tohFW6pm"
+CLIENT_ID = ""#Put it in env var
+SECRET_TOKEN = "" 
+USERNAME = ""
+REDDIT_PASSWORD = ""
+#https://docs.google.com/presentation/d/1Mc365IrU8aKYpU7JNqtOi73YRW34o5MwNtNDW8ZosuI/edit#slide=id.gb6bfa0f489_0_378
 ##https://towardsdatascience.com/how-to-use-the-reddit-api-in-python-5e05ddfd1e5c
 def main():
         # note that CLIENT_ID refers to 'personal use script' and SECRET_TOKEN to 'token'
