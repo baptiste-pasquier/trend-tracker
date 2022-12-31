@@ -33,7 +33,7 @@ def main():
 
 	for data in consumer:
 		data = data.value
-		print(data['text'],"\n\n")
+		print(data['text'],"\n")
 		data['cluster'] = model.predict_one(data["text"])
 		model = model.learn_one(data["text"])
 		print(data['cluster'])

@@ -10,7 +10,7 @@ BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN")
 RAW_TOPIC = "raw_tweets"
 BOOTSTRAP_ENDPOINT = "localhost:9092"
 STREAM_RULE = "news lang:en has:geo -is:retweet"
-TIME_SLEEP = 0.5
+TIME_SLEEP = 0.2
 
 
 class TweetStream(tweepy.StreamingClient):
