@@ -1,25 +1,25 @@
 import json
 
-from ingest_tweets import BOOTSTRAP_ENDPOINT
 from kafka import KafkaConsumer, KafkaProducer
 from river import cluster, feature_extraction, metrics
-from tsf_data import CLEAN_TOPIC, GROUP_ID
 
-CLUSTER_TOPIC = "cluster_texts"
+from m2ds_data_stream_project.tools import load_config
 
 
 def main():
+    # Load config
+    config = load_config("config.yml")
 
     producer = KafkaProducer(
-        bootstrap_servers=BOOTSTRAP_ENDPOINT,
+        bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf8"),
     )
     # Call a Consumer to retrieve the raw tweets
 
     consumer = KafkaConsumer(
-        CLEAN_TOPIC,
-        bootstrap_servers=BOOTSTRAP_ENDPOINT,
-        group_id=GROUP_ID,
+        config["clean_topic"],
+        bootstrap_servers=config["bootstrap_endpoint"],
+        group_id=config["group_id"],
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
     )
 
@@ -38,7 +38,7 @@ def main():
         data["cluster"] = model.predict_one(data["text"])
         model = model.learn_one(data["text"])
         print(data["cluster"])
-        producer.send(CLUSTER_TOPIC, data)
+        producer.send(config["cluster_topic"], data)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@
 
 - Sign-up for a Twitter developer account on this [link](https://developer.twitter.com/en/apply-for-access)
 - Create a Bearer Token ([documentation](https://developer.twitter.com/en/docs/authentication/oauth-2-0/bearer-tokens))
-- Set the environment variable `TWITTER_BEARER_TOKEN` with your Bearer Token
+- Fill in the field `BEARER_TOKEN` in the `secret_config.yml` file
 - Install and run Kafka ([documentation](https://kafka.apache.org/quickstart))
 
 ## Installation
@@ -29,4 +29,19 @@ pip install -e .
 Stream tweets:
 ```bash
 python scripts/ingest_tweets.py
+```
+
+Preprocess tweets:
+```bash
+python scripts/tsf_data.py
+```
+
+Tweet clustering:
+```bash
+python scripts/cluster_data.py
+```
+
+Real-time visualization:
+```bash
+streamlit run scripts/viz_cluster.py
 ```

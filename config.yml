@@ -1,0 +1,15 @@
+# Ingest tweets
+bootstrap_endpoint: "localhost:9092"
+raw_topic: "raw_tweets"
+stream_rule: "news lang:en has:geo -is:retweet"
+time_sleep: 0.2
+
+# TSF data
+group_id: "main_group"
+negation_words: ["no", "not"]
+fg_stop_words: False
+fg_lemmatization: False
+clean_topic: "clean_tweets"
+
+# Clustering
+cluster_topic: "cluster_texts"

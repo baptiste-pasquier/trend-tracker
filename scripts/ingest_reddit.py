@@ -1,21 +1,27 @@
 import pandas as pd
 import requests
 
-CLIENT_ID = ""  # Put it in env var
-SECRET_TOKEN = ""
-USERNAME = ""
-REDDIT_PASSWORD = ""
+from m2ds_data_stream_project.tools import load_config
 
 # https://docs.google.com/presentation/d/1Mc365IrU8aKYpU7JNqtOi73YRW34o5MwNtNDW8ZosuI/edit#slide=id.gb6bfa0f489_0_378
 # https://towardsdatascience.com/how-to-use-the-reddit-api-in-python-5e05ddfd1e5c
 
 
 def main():
+    # Load config
+    secret_config = load_config("secret_config.yml")
+
     # note that CLIENT_ID refers to 'personal use script' and SECRET_TOKEN to 'token'
-    auth = requests.auth.HTTPBasicAuth(CLIENT_ID, SECRET_TOKEN)
+    auth = requests.auth.HTTPBasicAuth(
+        secret_config["REDDIT"]["CLIENT_ID"], secret_config["REDDIT"]["SECRET_TOKEN"]
+    )
 
     # here we pass our login method (password), username, and password
-    data = {"grant_type": "password", "username": USERNAME, "password": REDDIT_PASSWORD}
+    data = {
+        "grant_type": "password",
+        "username": secret_config["REDDIT"]["USERNAME"],
+        "password": secret_config["REDDIT"]["PASSWORD"],
+    }
 
     # setup our header info, which gives reddit a brief description of our app
     headers = {"User-Agent": "StreamBot/0.0.1"}

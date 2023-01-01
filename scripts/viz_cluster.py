@@ -3,13 +3,15 @@ import time
 
 import pandas as pd
 import streamlit as st
-from cluster_data import CLUSTER_TOPIC
-from ingest_tweets import BOOTSTRAP_ENDPOINT
 from kafka import KafkaConsumer
-from tsf_data import GROUP_ID
+
+from m2ds_data_stream_project.tools import load_config
 
 
 def main():
+    # Load config
+    config = load_config("config.yml")
+
     st.set_page_config(
         page_title="Real-Time News Dashboard",
         page_icon="✅",
@@ -22,9 +24,9 @@ def main():
     placeholder = st.empty()
 
     consumer = KafkaConsumer(
-        CLUSTER_TOPIC,
-        bootstrap_servers=BOOTSTRAP_ENDPOINT,
-        group_id=GROUP_ID,
+        config["cluster_topic"],
+        bootstrap_servers=config["bootstrap_endpoint"],
+        group_id=config["group_id"],
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
     )
     list_data = []
