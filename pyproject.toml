@@ -8,7 +8,16 @@ packages = [{include = "m2ds_data_stream_project", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+tweepy = "^4.12.1"
+kafka-python = "^2.0.2"
 
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+black = {extras = ["jupyter"], version = "^22.12.0"}
+ipykernel = "^6.19.4"
+ipywidgets = ">=7.0,<8.0"
+pytest = "^7.2.0"
 
 [build-system]
 requires = ["poetry-core"]
