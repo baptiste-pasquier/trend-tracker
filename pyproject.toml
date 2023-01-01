@@ -10,6 +10,10 @@ packages = [{include = "m2ds_data_stream_project", from = "src"}]
 python = "^3.10"
 tweepy = "^4.12.1"
 kafka-python = "^2.0.2"
+nltk = "^3.8"
+contractions = "^0.1.73"
+river = "^0.14.0"
+streamlit = "^1.16.0"
 
 
 [tool.poetry.group.dev.dependencies]
