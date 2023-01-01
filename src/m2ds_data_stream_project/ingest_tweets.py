@@ -2,6 +2,7 @@ import json
 import time
 
 import tweepy
+from kafka import KafkaProducer
 
 
 class TweetStream(tweepy.StreamingClient):
@@ -9,7 +10,24 @@ class TweetStream(tweepy.StreamingClient):
     Customised Streaming Class
     """
 
-    def __init__(self, producer, raw_topic, time_sleep, *args, **kwargs):
+    def __init__(
+        self,
+        producer: KafkaProducer,
+        raw_topic: str,
+        time_sleep: float,
+        *args,
+        **kwargs,
+    ):
+        """
+        Parameters
+        ----------
+        producer : KafkaProducer
+            Producer to retrieve raw data
+        raw_topic : str
+            Topic kafka where to send tweets
+        time_sleep : float
+            Sleep time between each tweet
+        """
         super().__init__(*args, **kwargs)
         self.producer = producer
         self.raw_topic = raw_topic
@@ -18,16 +36,15 @@ class TweetStream(tweepy.StreamingClient):
     def on_connect(self):
         print("connected")
 
-    def on_data(self, tweet):
-        """
-        Function called when a new tweet is detected. The data is selected and send to a Producer
+    def on_data(self, raw_data: bytes):
+        """Function called when a new tweet is detected. The data is selected and send to a Producer
 
-        Arguments
-        -------------------------
-                tweet(<bytes>): Data regarding the tweet
-                producer(<KafkaProducer>): Producer to retrieve raw data
+        Parameters
+        ----------
+        raw_data : bytes
+            Data regarding the tweet
         """
-        tweet = json.loads(tweet)
+        tweet = json.loads(raw_data)
         tweet_data = {
             "id": tweet["data"]["id"],
             "created_at": tweet["data"]["created_at"],
@@ -46,14 +63,13 @@ class TweetStream(tweepy.StreamingClient):
         time.sleep(self.time_sleep)
 
 
-def reset_stream(tweet_stream):
-    """
-    Reset all the rules regarding a Streaming Client (not automatic after stopping execution)
+def reset_stream(tweet_stream: TweetStream) -> None:
+    """Reset all the rules regarding a Streaming Client (not automatic after stopping execution)
 
-    Arguments
-    -----------------------
-            tweet_stream(<TweetStream>): Object to reset the rules on
-
+    Parameters
+    ----------
+    tweet_stream : TweetStream
+        Object to reset the rules on
     """
     rules = tweet_stream.get_rules()
     ids = [r.id for r in rules.data]

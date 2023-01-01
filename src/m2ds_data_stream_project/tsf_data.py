@@ -7,9 +7,19 @@ from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 
-def get_wordnet_pos(tag):
-    """
-    TO DOCUMENT
+def get_wordnet_pos(tag: str) -> str:
+    """_summary_
+    TODO docstring
+
+    Parameters
+    ----------
+    tag : str
+        _description_
+
+    Returns
+    -------
+    str
+        _description_
     """
     if tag.startswith("J"):
         return wordnet.ADJ
@@ -23,22 +33,31 @@ def get_wordnet_pos(tag):
         return wordnet.NOUN
 
 
-def text_cleaning(tweet, negation_set, fg_stop_words=False, fg_lemmatization=False):
-    """
-    Clean/Transform the text of a tweet
+def text_cleaning(
+    tweet: str,
+    negation_set: set[str],
+    fg_stop_words: bool = False,
+    fg_lemmatization: bool = False,
+) -> tuple[str, list[str], list[str]]:
+    """Text cleaning of a tweet and extraction of mentions and hashtags
 
-    Arguments
-    ---------------------------
-        tweet(<str>): String to clean
-        fg_stop_words (<bool>): Remove or not stop words
-        fg_lemmatization (<bool>): Apply or not lemmatization
-
+    Parameters
+    ----------
+    tweet : str
+        String to clean
+    negation_set : set[str]
+        Negation words
+    fg_stop_words : bool, optional
+        Remove or not stop words, by default False
+    fg_lemmatization : bool, optional
+        Apply or not lemmatization, by default False
 
     Returns
-    ---------------------------
-        tweet(<str>): Tokenized text
-        mentions (<list>): List of mentionned users in the tweet (@'s)
-        hashtags (<list>): List of hashtags in the tweets (#'s)
+    -------
+    tuple[str, list[str], list[str]]
+        tweet : Cleaned string
+        mentions : List of mentionned users in the tweet (@'s)
+        hashtags : List of hashtags in the tweets (#'s)
     """
 
     # lowercase
@@ -60,18 +79,22 @@ def text_cleaning(tweet, negation_set, fg_stop_words=False, fg_lemmatization=Fal
     tweet = " ".join([contractions.fix(x) for x in tweet.split()])
 
     # tokenization
-    tweet = word_tokenize(tweet)
+    tweet_words = word_tokenize(tweet)
 
     if fg_stop_words:
         # remove stop words
         stop_words = set(stopwords.words("english")).difference(negation_set)
-        tweet = [word for word in tweet if word not in stop_words]
+        tweet_words = [word for word in tweet_words if word not in stop_words]
 
     if fg_lemmatization:
         # lemmatization
-        tweet = nltk.tag.pos_tag(tweet)
-        tweet = [(word, get_wordnet_pos(pos_tag)) for (word, pos_tag) in tweet]
+        tweet_pos_tag = nltk.tag.pos_tag(tweet_words)
+        tweet_pos_tag = [
+            (word, get_wordnet_pos(pos_tag)) for (word, pos_tag) in tweet_pos_tag
+        ]
         wordnet_lemmatizer = WordNetLemmatizer()
-        tweet = [wordnet_lemmatizer.lemmatize(word, tag) for (word, tag) in tweet]
+        tweet_words = [
+            wordnet_lemmatizer.lemmatize(word, tag) for (word, tag) in tweet_pos_tag
+        ]
 
-    return " ".join(tweet), mentions, hashtags
+    return " ".join(tweet_words), mentions, hashtags
