@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "m2ds-data-stream-project"
+version = "0.1.0"
+description = ""
+authors = ["Baptiste Pasquier <pasquierbaptiste@hotmail.fr>"]
+readme = "README.md"
+packages = [{include = "m2ds_data_stream_project", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
