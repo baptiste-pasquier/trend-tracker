@@ -1,5 +1,7 @@
 # m2ds_data_stream_project
 
+[![Build & Test](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml/badge.svg)](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml)
+
 ## Prerequities
 
 - Sign-up for a Twitter developer account on this [link](https://developer.twitter.com/en/apply-for-access)
