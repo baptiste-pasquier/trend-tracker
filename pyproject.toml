@@ -14,6 +14,9 @@ nltk = "^3.8"
 contractions = "^0.1.73"
 river = "^0.14.0"
 streamlit = "^1.16.0"
+praw = "^7.6.1"
+wordcloud = "^1.8.2.2"
+plotly = "^5.11.0"
 
 
 [tool.poetry.group.dev.dependencies]
