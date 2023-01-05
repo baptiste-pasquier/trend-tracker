@@ -161,3 +161,5 @@ cython_debug/
 
 .vscode/*
 secret_config.yml
+logs/*
+!logs/.gitkeep

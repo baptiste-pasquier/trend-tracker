@@ -1,8 +1,11 @@
 import json
+import logging
 import time
 
 import tweepy
 from kafka import KafkaProducer
+
+log = logging.getLogger("ingest_tweets")
 
 
 class TweetStream(tweepy.StreamingClient):
@@ -34,7 +37,7 @@ class TweetStream(tweepy.StreamingClient):
         self.time_sleep = time_sleep
 
     def on_connect(self):
-        print("connected")
+        log.info("Connected")
 
     def on_data(self, raw_data: bytes):
         """Function called when a new tweet is detected. The data is selected and send to a Producer
@@ -59,7 +62,7 @@ class TweetStream(tweepy.StreamingClient):
 
         topic = self.raw_topic
         self.producer.send(topic, tweet_data)
-        print(f"Sending message to topic: {topic}\n{tweet_data}\n")
+        log.info(f"Sending message to topic: {topic}\n{tweet_data}\n")
         time.sleep(self.time_sleep)
 
 

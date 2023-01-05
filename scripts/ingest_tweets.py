@@ -1,10 +1,15 @@
 import json
+import logging
+import logging.config
 
 import tweepy
 from kafka import KafkaProducer
 
 from m2ds_data_stream_project.ingest_tweets import TweetStream, reset_stream
 from m2ds_data_stream_project.tools import load_config
+
+
+log = logging.getLogger("ingest_tweets")
 
 
 def main():
@@ -34,10 +39,10 @@ def main():
     if previous_rules:
         reset_stream(tweet_stream)
 
-        # Add new rules
+    # Add new rules
     rule = tweepy.StreamRule(config["stream_rule"])
     tweet_stream.add_rules(rule)
-    print(tweet_stream.get_rules())
+    log.info(tweet_stream.get_rules())
 
     # Filtered stream
     tweet_stream.filter(
@@ -48,4 +53,5 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.config.fileConfig("logging.ini")
     main()

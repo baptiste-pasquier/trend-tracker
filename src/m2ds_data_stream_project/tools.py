@@ -19,3 +19,21 @@ def load_config(config_path: str) -> dict:
         config = yaml.safe_load(file)
 
     return config
+
+
+def log_text(string: str, pad) -> str:
+    """_summary_
+
+    Parameters
+    ----------
+    string : str
+        _description_
+
+    Returns
+    -------
+    str
+        _description_
+    """
+    string = string.replace("\n", " ")
+    string = string.ljust(pad)[:pad]
+    return string

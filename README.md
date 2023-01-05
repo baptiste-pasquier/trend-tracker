@@ -26,19 +26,24 @@ pip install -e .
 > **Warning**
 > Each script must be run in a separate console
 
-Stream tweets:
+1. Stream tweets:
 ```bash
 python scripts/ingest_tweets.py
 ```
 
-Preprocess tweets:
+2. Preprocess tweets:
 ```bash
 python scripts/tsf_data.py
 ```
 
-Tweet clustering:
+3. Tweet clustering:
 ```bash
 python scripts/cluster_data.py
+```
+
+Run 1 + 2 + 3:
+```bash
+python scripts/run_all.py
 ```
 
 Real-time visualization:
