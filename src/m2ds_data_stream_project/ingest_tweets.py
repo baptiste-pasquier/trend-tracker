@@ -50,10 +50,10 @@ class TweetStream(tweepy.StreamingClient):
         tweet = json.loads(raw_data)
         tweet_data = {
             "id": tweet["data"]["id"],
-            "created_at": tweet["data"]["created_at"],
-            "author_id": tweet["data"]["author_id"],
+            "dt_created": tweet["data"]["created_at"],
+            "id_author": tweet["data"]["author_id"],
             "lang": tweet["data"]["lang"],
-            "place_id": tweet["data"]["geo"]["place_id"],
+            "id_place": tweet["data"]["geo"]["place_id"],
             "place_country": tweet["includes"]["places"][0]["country"],
             "place_name": tweet["includes"]["places"][0]["name"],
             "place_type": tweet["includes"]["places"][0]["place_type"],
