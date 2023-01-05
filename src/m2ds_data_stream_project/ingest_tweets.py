@@ -58,6 +58,7 @@ class TweetStream(tweepy.StreamingClient):
             "place_name": tweet["includes"]["places"][0]["name"],
             "place_type": tweet["includes"]["places"][0]["place_type"],
             "text": tweet["data"]["text"],
+            "source": "twitter"
         }
 
         topic = self.raw_topic

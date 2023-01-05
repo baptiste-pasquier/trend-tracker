@@ -6,7 +6,6 @@ from kafka import KafkaProducer
 
 from m2ds_data_stream_project.tools import load_config
 
-
 def main():
     # Load config
     secret_config = load_config("secret_config.yml")
@@ -36,15 +35,13 @@ def main():
             print()
             parent_id = str(comment.parent())
             submission = reddit.comment(parent_id)
-            #print('Parent:')
-            #print(submission.body)
-            #print('Reply')
             reddit_data = {
                 "id_comment": comment.id,
                 "dt_created": comment.created_utc,
                 "id_author": comment.author.id,
-                "lang": "en", #99% is english text might need to investigate a bit more though
+                "lang": "en", #99% is english text might need to investigate a bit more though | lib langid to test 
                 "text": comment.body,
+                "source":"reddit"
             }
             print(reddit_data)
             topic = config['raw_topic_reddit']
