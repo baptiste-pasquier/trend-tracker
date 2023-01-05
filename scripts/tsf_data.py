@@ -20,13 +20,16 @@ def main():
     nltk.download("averaged_perceptron_tagger")
     nltk.download("wordnet")
 
+    #Load all the data sources
+    topics = (config["raw_topic"],config["raw_topic_reddit"])
+
     producer = KafkaProducer(
         bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf-8"),
     )
     # Call a Consumer to retrieve the raw tweets
     consumer = KafkaConsumer(
-        config["raw_topic"],
+        *topics,
         bootstrap_servers=config["bootstrap_endpoint"],
         group_id=config["group_id"],
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
