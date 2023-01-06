@@ -1,10 +1,15 @@
 import pandas as pd
 import praw 
 import time
+import json 
+import logging
+import logging.config
 
 from kafka import KafkaProducer
 
 from m2ds_data_stream_project.tools import load_config
+
+log = logging.getLogger("ingest_reddit_comments")
 
 def main():
     # Load config
@@ -45,8 +50,8 @@ def main():
             }
             print(reddit_data)
             topic = config['raw_topic_reddit']
-            producer.send(topic, tweet_data)
-            log.info(f"Sending message to topic: {topic}\n{tweet_data}\n")
+            producer.send(topic, reddit_data)
+            log.info(f"Sending message to topic: {topic}\n{reddit_data}\n")
             time.sleep(config["time_sleep"])
         except praw.exceptions.PRAWException as e:
             pass
