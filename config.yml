@@ -1,8 +1,13 @@
-# Ingest tweets
+# Kafka
 bootstrap_endpoint: "localhost:9092"
+time_sleep: 0.2
+
+# Ingest tweets
 raw_topic: "raw_tweets"
 stream_rule: "news lang:en has:geo -is:retweet"
-time_sleep: 0.2
+
+# Ingest reddit comments
+raw_topic_reddit: "raw_reddit_comments"
 
 # TSF data
 group_id: "main_group"

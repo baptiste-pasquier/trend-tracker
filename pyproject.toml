@@ -14,6 +14,7 @@ nltk = "^3.8"
 contractions = "^0.1.73"
 river = "^0.14.0"
 streamlit = "^1.16.0"
+praw = "^7.6.1"
 
 
 [tool.poetry.group.dev.dependencies]
