@@ -30,12 +30,10 @@ def main():
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
     )
     list_data = []
-    count_data = 0
     list_cluster = []
     # creating a single-element container
     placeholder = st.empty()
-    for data in consumer:
-        count_data += 1
+    for i, data in enumerate(consumer):
         data = data.value
         new_data = {
             "Text": data["text"],
@@ -51,7 +49,7 @@ def main():
         with placeholder.container():
             kpi1, kpi2 = st.columns(2)
             kpi1.metric(label="Nb Cluster", value=len(list_cluster))
-            kpi2.metric(label="Total Nb Data", value=count_data)
+            kpi2.metric(label="Total Nb Data", value=i + 1)
             st.markdown("### Detailed Data view")
             st.dataframe(df.sort_values(by=["Cluster"]))
             time.sleep(0.5)

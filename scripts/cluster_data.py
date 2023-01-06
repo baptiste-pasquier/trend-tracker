@@ -3,7 +3,7 @@ import logging
 import logging.config
 
 from kafka import KafkaConsumer, KafkaProducer
-from river import cluster, feature_extraction, metrics
+from river import cluster, feature_extraction
 
 from m2ds_data_stream_project.tools import load_config, log_text
 
@@ -36,8 +36,7 @@ def main():
         real_time_fading=False, fading_factor=0.001, tgap=100, auto_r=True
     )
 
-    i = 0
-    for data in consumer:
+    for i, data in enumerate(consumer):
         if i % 15 == 0:
             log.info("_" * (4 + 100 + 6 + 7 + 4))
             log.info(f"""||  {"Text".center(100)}  ||  Cluster  ||""")
@@ -49,7 +48,6 @@ def main():
             f"""||  {log_text(data["text"], 100)}  ||  {str(data["cluster"]).center(7)}  ||"""
         )
         producer.send(config["cluster_topic"], data)
-        i += 1
 
 
 if __name__ == "__main__":
