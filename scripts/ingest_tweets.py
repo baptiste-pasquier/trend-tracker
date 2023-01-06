@@ -8,7 +8,6 @@ from kafka import KafkaProducer
 from m2ds_data_stream_project.ingest_tweets import TweetStream, reset_stream
 from m2ds_data_stream_project.tools import load_config
 
-
 log = logging.getLogger("ingest_tweets")
 
 

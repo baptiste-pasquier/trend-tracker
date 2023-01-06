@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 import contractions
@@ -64,7 +66,7 @@ def text_cleaning(
     tweet = tweet.lower()
 
     # remove extra newlines
-    tweet = re.sub(r"[\r|\n|\r\n]+", "", tweet)
+    tweet = re.sub(r"[\r|\n|\r\n]+", " ", tweet)
 
     # remove URL
     tweet = re.sub(r"https?://[\S]+", "", tweet)
@@ -72,11 +74,12 @@ def text_cleaning(
     # Extract @tag and #tag
     mentions = re.findall(r"@(\w+)", tweet)
     hashtags = re.findall(r"#(\w+)", tweet)
-    # Remove them and special chars
-    tweet = re.sub("[^A-Za-z0-9]+", " ", tweet)
 
     # remove contractions
     tweet = " ".join([contractions.fix(x) for x in tweet.split()])
+
+    # Remove @ # and any special chars
+    tweet = re.sub(r"[\W_]+", " ", tweet)
 
     # tokenization
     tweet_words = word_tokenize(tweet)

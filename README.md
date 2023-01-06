@@ -11,16 +11,24 @@
 
 ## Installation
 
-Clone the repository and run inside :
+1. Clone the repository
+```bash
+git clone https://github.com/baptiste-pasquier/m2ds_data-stream-project
+```
 
+2. Install the project
 - With `poetry` ([installation](https://python-poetry.org/docs/#installation)) :
 ```bash
 poetry install
 ```
-
 - With `pip` :
 ```bash
 pip install -e .
+```
+
+3. Install pre-commit
+```bash
+pre-commit install
 ```
 
 ## Usage
