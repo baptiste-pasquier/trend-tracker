@@ -1,70 +1,54 @@
 import pandas as pd
-import requests
+import praw 
+import time
+import json 
+import logging
+import logging.config
+
+from kafka import KafkaProducer
 
 from m2ds_data_stream_project.tools import load_config
 
-# https://docs.google.com/presentation/d/1Mc365IrU8aKYpU7JNqtOi73YRW34o5MwNtNDW8ZosuI/edit#slide=id.gb6bfa0f489_0_378
-# https://towardsdatascience.com/how-to-use-the-reddit-api-in-python-5e05ddfd1e5c
-
+log = logging.getLogger("ingest_reddit")
 
 def main():
     # Load config
     secret_config = load_config("secret_config.yml")
+    config = load_config("config.yml")
 
-    # note that CLIENT_ID refers to 'personal use script' and SECRET_TOKEN to 'token'
-    auth = requests.auth.HTTPBasicAuth(
-        secret_config["REDDIT"]["CLIENT_ID"], secret_config["REDDIT"]["SECRET_TOKEN"]
+    # Define Kafka producer
+    producer = KafkaProducer(
+        bootstrap_servers=config["bootstrap_endpoint"],
+        value_serializer=lambda m: json.dumps(m).encode("utf8"),
     )
 
-    # here we pass our login method (password), username, and password
-    data = {
-        "grant_type": "password",
-        "username": secret_config["REDDIT"]["USERNAME"],
-        "password": secret_config["REDDIT"]["PASSWORD"],
-    }
+    args_reddit = {
+            "client_id":secret_config["REDDIT"]["CLIENT_ID"],
+            "client_secret":secret_config["REDDIT"]["SECRET_TOKEN"], 
+            "password":secret_config["REDDIT"]["REDDIT_PASSWORD"],
+            "user_agent":secret_config["REDDIT"]["USER_AGENT"], 
+            "username":secret_config["REDDIT"]["USERNAME"],
+            "check_for_async":False
+            }
+    reddit = praw.Reddit(**args_reddit)
 
-    # setup our header info, which gives reddit a brief description of our app
-    headers = {"User-Agent": "StreamBot/0.0.1"}
+    subreddit = reddit.subreddit('news')
 
-    # send our request for an OAuth token
-    res = requests.post(
-        "https://www.reddit.com/api/v1/access_token",
-        auth=auth,
-        data=data,
-        headers=headers,
-    )
-
-    # convert response to JSON and pull access_token value
-
-    TOKEN = res.json()["access_token"]
-
-    # add authorization to our headers dictionary
-    headers = {**headers, **{"Authorization": f"bearer {TOKEN}"}}
-
-    # while the token is valid (~2 hours) we just add headers=headers to our requests
-    requests.get("https://oauth.reddit.com/api/v1/me", headers=headers)
-
-    res = requests.get("https://oauth.reddit.com/r/news/new", headers=headers)
-
-    df = pd.DataFrame()  # initialize dataframe
-
-    # loop through each post retrieved from GET request
-    for post in res.json()["data"]["children"]:
-        # append relevant data to dataframe
-        df = df.append(
-            {
-                "subreddit": post["data"]["subreddit"],
-                "title": post["data"]["title"],
-                "selftext": post["data"]["selftext"],
-                "upvote_ratio": post["data"]["upvote_ratio"],
-                "ups": post["data"]["ups"],
-                "downs": post["data"]["downs"],
-                "score": post["data"]["score"],
-            },
-            ignore_index=True,
-        )
-    print(df.head())
-
-
+    for comment in subreddit.stream.comments():
+        try:
+            reddit_data = {
+                "id_comment": comment.id,
+                "dt_created": comment.created_utc,
+                "id_author": comment.author.id,
+                "lang": "en", #99% is english text might need to investigate a bit more though | lib langid to test 
+                "text": comment.body,
+                "source":"reddit"
+            }
+            topic = config['raw_topic_reddit']
+            producer.send(topic, reddit_data)
+            log.info(f"Sending message to topic: {topic}\n{reddit_data}\n")
+            time.sleep(config["time_sleep"])
+        except praw.exceptions.PRAWException as e:
+            pass
 if __name__ == "__main__":
     main()

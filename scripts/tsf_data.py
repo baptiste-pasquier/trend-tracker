@@ -15,6 +15,9 @@ def main():
     # Load config
     config = load_config("config.yml")
 
+    #Load all the data sources
+    topics = (config["raw_topic"],config["raw_topic_reddit"])
+
     nltk.download("punkt")
     nltk.download("stopwords")
     nltk.download("averaged_perceptron_tagger")
@@ -26,7 +29,7 @@ def main():
     )
     # Call a Consumer to retrieve the raw tweets
     consumer = KafkaConsumer(
-        config["raw_topic"],
+        *topics,
         bootstrap_servers=config["bootstrap_endpoint"],
         group_id=config["group_id"],
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
