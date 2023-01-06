@@ -15,8 +15,8 @@ def main():
     # Load config
     config = load_config("config.yml")
 
-    #Load all the data sources
-    topics = (config["raw_topic"],config["raw_topic_reddit"])
+    # Load all the data sources
+    topics = (config["raw_topic"], config["raw_topic_reddit"])
 
     nltk.download("punkt")
     nltk.download("stopwords")
@@ -36,8 +36,7 @@ def main():
     )
 
     # Preprocess the tweets
-    i = 0
-    for data in consumer:
+    for i, data in enumerate(consumer):
         if i % 15 == 0:
             log.info("_" * (4 + 80 + 6 + 40 + 6 + 40 + 4))
             log.info(
@@ -55,7 +54,6 @@ def main():
         log.info(
             f"""||  {log_text(data["text"], 80)}  ||  {log_text(str(data["mentions"]), 40)}  ||  {log_text(str(data["hashtags"]), 40)}  ||"""
         )
-        i += 1
 
         # Send the preprocessed data
         producer.send(config["clean_topic"], data)
