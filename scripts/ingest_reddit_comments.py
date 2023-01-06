@@ -36,10 +36,6 @@ def main():
 
     for comment in subreddit.stream.comments():
         try:
-            print(30*'_')
-            print()
-            parent_id = str(comment.parent())
-            submission = reddit.comment(parent_id)
             reddit_data = {
                 "id_comment": comment.id,
                 "dt_created": comment.created_utc,
@@ -48,7 +44,6 @@ def main():
                 "text": comment.body,
                 "source":"reddit"
             }
-            print(reddit_data)
             topic = config['raw_topic_reddit']
             producer.send(topic, reddit_data)
             log.info(f"Sending message to topic: {topic}\n{reddit_data}\n")
