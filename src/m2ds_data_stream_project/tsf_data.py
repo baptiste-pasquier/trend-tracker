@@ -36,16 +36,16 @@ def get_wordnet_pos(tag: str) -> str:
 
 
 def text_cleaning(
-    tweet: str,
+    corpus: str,
     negation_set: set[str],
     fg_stop_words: bool = False,
     fg_lemmatization: bool = False,
 ) -> tuple[str, list[str], list[str]]:
-    """Text cleaning of a tweet and extraction of mentions and hashtags
+    """Text cleaning of a corpus and extraction of mentions and hashtags
 
     Parameters
     ----------
-    tweet : str
+    corpus : str
         String to clean
     negation_set : set[str]
         Negation words
@@ -57,47 +57,47 @@ def text_cleaning(
     Returns
     -------
     tuple[str, list[str], list[str]]
-        tweet : Cleaned string
-        mentions : List of mentionned users in the tweet (@'s)
-        hashtags : List of hashtags in the tweets (#'s)
+        corpus : Cleaned string
+        mentions : List of mentionned users in the corpus (@'s)
+        hashtags : List of hashtags in the corpuss (#'s)
     """
 
     # lowercase
-    tweet = tweet.lower()
+    corpus = corpus.lower()
 
     # remove extra newlines
-    tweet = re.sub(r"[\r|\n|\r\n]+", " ", tweet)
+    corpus = re.sub(r"[\r|\n|\r\n]+", " ", corpus)
 
     # remove URL
-    tweet = re.sub(r"https?://[\S]+", "", tweet)
+    corpus = re.sub(r"https?://[\S]+", "", corpus)
 
     # Extract @tag and #tag
-    mentions = re.findall(r"@(\w+)", tweet)
-    hashtags = re.findall(r"#(\w+)", tweet)
+    mentions = re.findall(r"@(\w+)", corpus)
+    hashtags = re.findall(r"#(\w+)", corpus)
 
     # remove contractions
-    tweet = " ".join([contractions.fix(x) for x in tweet.split()])
+    corpus = " ".join([contractions.fix(x) for x in corpus.split()])
 
     # Remove @ # and any special chars
-    tweet = re.sub(r"[\W_]+", " ", tweet)
+    corpus = re.sub(r"[\W_]+", " ", corpus)
 
     # tokenization
-    tweet_words = word_tokenize(tweet)
+    corpus_words = word_tokenize(corpus)
 
     if fg_stop_words:
         # remove stop words
         stop_words = set(stopwords.words("english")).difference(negation_set)
-        tweet_words = [word for word in tweet_words if word not in stop_words]
+        corpus_words = [word for word in corpus_words if word not in stop_words]
 
     if fg_lemmatization:
         # lemmatization
-        tweet_pos_tag = nltk.tag.pos_tag(tweet_words)
-        tweet_pos_tag = [
-            (word, get_wordnet_pos(pos_tag)) for (word, pos_tag) in tweet_pos_tag
+        corpus_pos_tag = nltk.tag.pos_tag(corpus_words)
+        corpus_pos_tag = [
+            (word, get_wordnet_pos(pos_tag)) for (word, pos_tag) in corpus_pos_tag
         ]
         wordnet_lemmatizer = WordNetLemmatizer()
-        tweet_words = [
-            wordnet_lemmatizer.lemmatize(word, tag) for (word, tag) in tweet_pos_tag
+        corpus_words = [
+            wordnet_lemmatizer.lemmatize(word, tag) for (word, tag) in corpus_pos_tag
         ]
 
-    return " ".join(tweet_words), mentions, hashtags
+    return " ".join(corpus_words), mentions, hashtags
