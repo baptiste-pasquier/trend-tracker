@@ -24,13 +24,15 @@ def main():
 
     args_reddit = {
         "client_id": secret_config["REDDIT"]["CLIENT_ID"],
-        "client_secret": secret_config["REDDIT"]["SECRET_TOKEN"],
-        "password": secret_config["REDDIT"]["REDDIT_PASSWORD"],
+        "client_secret": secret_config["REDDIT"]["CLIENT_SECRET"],
+        "password": secret_config["REDDIT"]["PASSWORD"],
         "user_agent": secret_config["REDDIT"]["USER_AGENT"],
         "username": secret_config["REDDIT"]["USERNAME"],
         "check_for_async": False,
     }
     reddit = praw.Reddit(**args_reddit)
+
+    log.info(f"Authenticated with username {reddit.user.me()}")
 
     subreddit = reddit.subreddit("news")
 
@@ -57,4 +59,5 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.config.fileConfig("logging.ini")
     main()
