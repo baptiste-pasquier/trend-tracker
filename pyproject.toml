@@ -15,6 +15,9 @@ contractions = "^0.1.73"
 river = "^0.14.0"
 streamlit = "^1.16.0"
 praw = "^7.6.1"
+plotly = "^5.11.0"
+wordcloud = "^1.8.2.2"
+matplotlib = "^3.6.2"
 
 
 [tool.poetry.group.dev.dependencies]

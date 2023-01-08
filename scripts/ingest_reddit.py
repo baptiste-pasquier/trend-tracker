@@ -43,6 +43,10 @@ def main():
                 "lang": "en",  # 99% is english text might need to investigate a bit more though | lib langid to test
                 "text": comment.body,
                 "source": "reddit",
+                "id_place": None,
+                "place_country": None,
+                "place_name": None,
+                "place_type": None,
             }
             topic = config["raw_topic_reddit"]
             producer.send(topic, reddit_data)
