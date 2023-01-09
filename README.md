@@ -1,5 +1,6 @@
 # m2ds_data_stream_project
 
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://baptiste-pasquier-m2ds-data-stream-project.streamlit.app/)
 [![Build & Test](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml/badge.svg)](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml)
 [![codecov](https://codecov.io/github/baptiste-pasquier/m2ds_data-stream-project/branch/main/graph/badge.svg)](https://codecov.io/github/baptiste-pasquier/m2ds_data-stream-project)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -12,6 +13,8 @@
 - Create a Reddit developed application on this [link](https://www.reddit.com/prefs/apps/) ([documentation](https://praw.readthedocs.io/en/stable/getting_started/authentication.html#password-flow))
 - Fill in the fields `CLIENT_ID`, `SECRET_TOKEN`, `USERNAME` and `PASSWORD` in the `secret_config.yml` file
 - Install and run Kafka ([documentation](https://kafka.apache.org/quickstart))
+- Create a MongoDB database (free on https://www.mongodb.com/cloud)
+- Fill in the fields `CONNECTION_STRING` in the `secret_config.yml` file
 
 ## Installation
 

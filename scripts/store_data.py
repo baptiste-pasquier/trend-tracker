@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import logging.config
@@ -32,6 +33,7 @@ def main():
         data = message.value
 
         data["dt_created"] = parser.parse(data["dt_created"])
+        data["dt_storage"] = datetime.datetime.utcnow()
 
         if data["source"] == "twitter":
             collection_twitter.insert_one(data)
