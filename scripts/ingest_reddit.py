@@ -2,6 +2,7 @@ import json
 import logging
 import logging.config
 import time
+from datetime import datetime
 
 import praw
 from kafka import KafkaProducer
@@ -40,7 +41,9 @@ def main():
         try:
             reddit_data = {
                 "id_comment": comment.id,
-                "dt_created": comment.created_utc,
+                "dt_created": datetime.utcfromtimestamp(
+                    comment.created_utc
+                ).isoformat(),
                 "id_author": comment.author.id,
                 "lang": "en",  # 99% is english text might need to investigate a bit more though | lib langid to test
                 "text": comment.body,

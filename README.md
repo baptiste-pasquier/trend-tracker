@@ -65,6 +65,11 @@ Run 1 + 2 + 3 + 4 in parallel:
 python scripts/run_all.py
 ```
 
+Data storage on MongoDB:
+```bash
+python scripts/store_data.py
+```
+
 Real-time visualization:
 ```bash
 streamlit run scripts/viz_cluster.py

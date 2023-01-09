@@ -49,7 +49,7 @@ class TweetStream(tweepy.StreamingClient):
         """
         tweet = json.loads(raw_data)
         tweet_data = {
-            "id": tweet["data"]["id"],
+            "_id": tweet["data"]["id"],
             "dt_created": tweet["data"]["created_at"],
             "id_author": tweet["data"]["author_id"],
             "lang": tweet["data"]["lang"],
