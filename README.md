@@ -1,6 +1,8 @@
 # m2ds_data_stream_project
 
 [![Build & Test](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml/badge.svg)](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml)
+[![codecov](https://codecov.io/github/baptiste-pasquier/m2ds_data-stream-project/branch/main/graph/badge.svg)](https://codecov.io/github/baptiste-pasquier/m2ds_data-stream-project)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Prerequities
 
