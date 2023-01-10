@@ -5,7 +5,7 @@ import logging.config
 from kafka import KafkaConsumer, KafkaProducer
 from river import cluster, feature_extraction
 
-from m2ds_data_stream_project.tools import load_config, log_text
+from m2ds_data_stream_project.tools import format_text_logging, load_config
 
 log = logging.getLogger("cluster_data")
 
@@ -18,8 +18,8 @@ def main():
         bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf8"),
     )
-    # Call a Consumer to retrieve the raw tweets
 
+    # Call a Consumer to retrieve the raw tweets
     consumer = KafkaConsumer(
         config["clean_topic"],
         bootstrap_servers=config["bootstrap_endpoint"],
@@ -37,15 +37,17 @@ def main():
     )
 
     for i, data in enumerate(consumer):
-        if i % 15 == 0:
-            log.info("_" * (4 + 100 + 6 + 7 + 4))
-            log.info(f"""||  {"Text".center(100)}  ||  Cluster  ||""")
-            log.info("-" * (4 + 100 + 6 + 7 + 4))
+        if i % 10 == 0:
+            log.info("_" * (3 + 100 + 4 + 7 + 4 + 7 + 3))
+            log.info(
+                f"""|| {"Text".center(100)} || Cluster || {"Source".center(7)} ||"""
+            )
+            log.info("-" * (3 + 100 + 4 + 7 + 4 + 7 + 3))
         data = data.value
         data["cluster"] = model.predict_one(data["text"])
         model = model.learn_one(data["text"])
         log.info(
-            f"""||  {log_text(data["text"], 100)}  ||  {str(data["cluster"]).center(7)}  ||"""
+            f"""|| {format_text_logging(data["text"], 100, ljust=True)} || {str(data["cluster"]).center(7)} || {data["source"].center(7)} ||"""
         )
         producer.send(config["cluster_topic"], data)
 

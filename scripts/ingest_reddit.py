@@ -1,21 +1,26 @@
 import json
 import logging
 import logging.config
+import os
 import time
 from datetime import datetime
 
 import praw
 from kafka import KafkaProducer
 
-from m2ds_data_stream_project.tools import load_config
+from m2ds_data_stream_project.tools import (
+    format_text_logging,
+    load_config,
+    load_config_in_environment,
+)
 
 log = logging.getLogger("ingest_reddit")
 
 
 def main():
     # Load config
-    secret_config = load_config("secret_config.yml")
     config = load_config("config.yml")
+    load_config_in_environment("secret_config.yml", log)
 
     # Define Kafka producer
     producer = KafkaProducer(
@@ -24,11 +29,11 @@ def main():
     )
 
     args_reddit = {
-        "client_id": secret_config["REDDIT"]["CLIENT_ID"],
-        "client_secret": secret_config["REDDIT"]["CLIENT_SECRET"],
-        "password": secret_config["REDDIT"]["PASSWORD"],
-        "user_agent": secret_config["REDDIT"]["USER_AGENT"],
-        "username": secret_config["REDDIT"]["USERNAME"],
+        "client_id": os.environ["REDDIT_CLIENT_ID"],
+        "client_secret": os.environ["REDDIT_CLIENT_SECRET"],
+        "password": os.environ["REDDIT_PASSWORD"],
+        "user_agent": os.environ["REDDIT_USER_AGENT"],
+        "username": os.environ["REDDIT_USERNAME"],
         "check_for_async": False,
     }
     reddit = praw.Reddit(**args_reddit)
@@ -53,9 +58,14 @@ def main():
                 "place_name": None,
                 "place_type": None,
             }
+
             topic = config["raw_topic_reddit"]
             producer.send(topic, reddit_data)
-            log.info(f"Sending message to topic: {topic}\n{reddit_data}\n")
+
+            # Logging
+            reddit_data["text"] = format_text_logging(reddit_data["text"], 100)
+            log.info(f"Sending message to topic: {topic}\n{reddit_data}")
+
             time.sleep(config["time_sleep"])
         except praw.exceptions.PRAWException:
             pass

@@ -5,6 +5,8 @@ import time
 import tweepy
 from kafka import KafkaProducer
 
+from m2ds_data_stream_project.tools import format_text_logging
+
 log = logging.getLogger("ingest_tweets")
 
 
@@ -63,7 +65,11 @@ class TweetStream(tweepy.StreamingClient):
 
         topic = self.raw_topic
         self.producer.send(topic, tweet_data)
-        log.info(f"Sending message to topic: {topic}\n{tweet_data}\n")
+
+        # Logging
+        tweet_data["text"] = format_text_logging(tweet_data["text"], 100)
+        log.info(f"Sending message to topic: {topic}\n{tweet_data}")
+
         time.sleep(self.time_sleep)
 
 

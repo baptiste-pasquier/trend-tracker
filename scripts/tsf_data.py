@@ -5,7 +5,7 @@ import logging.config
 import nltk
 from kafka import KafkaConsumer, KafkaProducer
 
-from m2ds_data_stream_project.tools import load_config, log_text
+from m2ds_data_stream_project.tools import format_text_logging, load_config
 from m2ds_data_stream_project.tsf_data import text_cleaning
 
 log = logging.getLogger("tsf_data")
@@ -27,6 +27,7 @@ def main():
         bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf-8"),
     )
+
     # Call a Consumer to retrieve the raw tweets
     consumer = KafkaConsumer(
         *topics,
@@ -38,13 +39,15 @@ def main():
     # Preprocess the tweets
     for i, data in enumerate(consumer):
         if i % 15 == 0:
-            log.info("_" * (4 + 80 + 6 + 40 + 6 + 40 + 4))
+            log.info("_" * (3 + 80 + 4 + 35 + 4 + 35 + 4 + 7 + 3))
             log.info(
-                f"""||  {"Text".center(80)}  ||  {"Mentions".center(40)}  ||  {"Hashtags".center(40)}  ||"""
+                f"""|| {"Text".center(80)} || {"Mentions".center(35)} || {"Hashtags".center(35)} || {"Source".center(7)} ||"""
             )
-            log.info("-" * (4 + 80 + 6 + 40 + 6 + 40 + 4))
+            log.info("-" * (3 + 80 + 4 + 35 + 4 + 35 + 4 + 7 + 3))
         data = data.value
-        log.info(f"""||  {log_text(data["text"], 80)}  ||{" "*44}||{" "*44}||""")
+        log.info(
+            f"""|| {format_text_logging(data["text"], 80, ljust=True)} || {" "*35} || {" "*35} ||"""
+        )
         data["text"], data["mentions"], data["hashtags"] = text_cleaning(
             data["text"],
             negation_set=set(config["negation_words"]),
@@ -52,7 +55,7 @@ def main():
             fg_lemmatization=config["fg_lemmatization"],
         )
         log.info(
-            f"""||  {log_text(data["text"], 80)}  ||  {log_text(str(data["mentions"]), 40)}  ||  {log_text(str(data["hashtags"]), 40)}  ||"""
+            f"""|| {format_text_logging(data["text"], 80, ljust=True)} || {format_text_logging(str(data["mentions"]), 35, ljust=True)} || {format_text_logging(str(data["hashtags"]), 35, ljust=True)} || {data["source"].center(7)} ||"""
         )
 
         # Send the preprocessed data
