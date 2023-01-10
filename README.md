@@ -13,7 +13,7 @@
 - Create a Reddit developed application on this [link](https://www.reddit.com/prefs/apps/) ([documentation](https://praw.readthedocs.io/en/stable/getting_started/authentication.html#password-flow))
 - Fill in the fields `CLIENT_ID`, `SECRET_TOKEN`, `USERNAME` and `PASSWORD` in the `secret_config.yml` file
 - Install and run Kafka ([documentation](https://kafka.apache.org/quickstart))
-- Create a MongoDB database (free on https://www.mongodb.com/cloud)
+- Create a MongoDB database in the [cloud](https://www.mongodb.com/cloud/atlas/register) (free) or install the server ([documentation](https://www.mongodb.com/docs/manual/installation/))
 - Fill in the fields `CONNECTION_STRING` in the `secret_config.yml` file
 
 ## Installation
@@ -63,17 +63,17 @@ python scripts/tsf_data.py
 python scripts/cluster_data.py
 ```
 
-Run 1 + 2 + 3 + 4 in parallel:
-```bash
-python scripts/run_all.py
-```
-
-Data storage on MongoDB:
+5. Data storage on MongoDB:
 ```bash
 python scripts/store_data.py
 ```
 
+Run 1 + 2 + 3 + 4 + 5 in parallel:
+```bash
+python scripts/run_all.py
+```
+
 Real-time visualization:
 ```bash
-streamlit run scripts/viz_cluster.py
+streamlit run streamlit_app.py
 ```

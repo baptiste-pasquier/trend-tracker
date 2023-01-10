@@ -1,12 +1,13 @@
 import json
 import logging
 import logging.config
+import os
 
 import tweepy
 from kafka import KafkaProducer
 
 from m2ds_data_stream_project.ingest_tweets import TweetStream, reset_stream
-from m2ds_data_stream_project.tools import load_config
+from m2ds_data_stream_project.tools import load_config, load_config_in_environment
 
 log = logging.getLogger("ingest_tweets")
 
@@ -17,7 +18,7 @@ def main():
     """
     # Load config
     config = load_config("config.yml")
-    secret_config = load_config("secret_config.yml")
+    load_config_in_environment("secret_config.yml", log)
 
     # Define Kafka producer
     producer = KafkaProducer(
@@ -27,7 +28,7 @@ def main():
 
     # Define Twitter stream client
     tweet_stream = TweetStream(
-        bearer_token=secret_config["TWITTER"]["BEARER_TOKEN"],
+        bearer_token=os.environ["TWITTER_BEARER_TOKEN"],
         producer=producer,
         raw_topic=config["raw_topic"],
         time_sleep=config["time_sleep"],

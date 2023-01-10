@@ -2,6 +2,7 @@ import datetime
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import pymongo.errors
 import streamlit as st
 from pymongo import MongoClient
 from wordcloud import WordCloud
@@ -26,12 +27,19 @@ def make_wordCloud(words, id_cluster):
     plt.close()
 
 
-class DataViz:
+class DataVizMongoDB:
     def __init__(
         self,
         connection_string,
+        logger,
     ):
         client = MongoClient(connection_string)
+        try:
+            client.admin.command("ping")
+            logger.info("Connected")
+        except pymongo.errors.ConnectionFailure:
+            logger.error("Server not available")
+
         database = client["m2ds_data_stream"]
 
         self.collection_twitter = database["twitter"]
@@ -47,7 +55,10 @@ class DataViz:
         self.df_data = pd.DataFrame([])
         self.df_count = pd.DataFrame([])
 
+        self.logger = logger
+
     def update_data(self):
+        self.logger.info("Refreshing data")
         self.datetime_now = datetime.datetime.utcnow()
 
         dict_count = {
