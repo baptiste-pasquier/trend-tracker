@@ -5,6 +5,7 @@ import pandas as pd
 import pymongo.errors
 import streamlit as st
 from pymongo import MongoClient
+from pymongo_schema.extract import extract_pymongo_client_schema
 from wordcloud import WordCloud
 
 
@@ -33,14 +34,14 @@ class DataVizMongoDB:
         connection_string,
         logger,
     ):
-        client = MongoClient(connection_string)
+        self.client = MongoClient(connection_string)
         try:
-            client.admin.command("ping")
+            self.client.admin.command("ping")
             logger.info("Connected")
         except pymongo.errors.ConnectionFailure:
             logger.error("Server not available")
 
-        database = client["m2ds_data_stream"]
+        database = self.client["m2ds_data_stream"]
 
         self.collection_twitter = database["twitter"]
         self.collection_reddit = database["reddit"]
@@ -56,6 +57,25 @@ class DataVizMongoDB:
         self.df_count = pd.DataFrame([])
 
         self.logger = logger
+
+        self.get_cluster_keys()
+
+    def is_memory_empty(self):
+        return len(self.data_memory_twitter) + len(self.data_memory_reddit) == 0
+
+    def get_cluster_keys(self):
+        schema = extract_pymongo_client_schema(
+            self.client,
+            database_names="m2ds_data_stream",
+        )
+        cluster_keys = set()
+        for collection_schema in schema["m2ds_data_stream"].values():
+            keys = collection_schema["object"].keys()
+            for key in keys:
+                if key.startswith("cluster"):
+                    cluster_keys.add(key)
+
+        self.cluster_keys = sorted(cluster_keys)
 
     def update_data(self):
         self.logger.info("Refreshing data")
@@ -79,11 +99,12 @@ class DataVizMongoDB:
             data = {
                 "text": document["text"],
                 "hashtags": document["hashtags"],
-                "cluster": document["cluster"],
                 "place": document["place_name"],
                 "source": document["source"],
                 "download_time": self.datetime_now,
             }
+            for cluster_key in self.cluster_keys:
+                data[cluster_key] = document[cluster_key]
             self.data_memory_twitter.append(data)
             dict_count["twitter"] += 1
             dict_count["total"] += 1
@@ -92,11 +113,12 @@ class DataVizMongoDB:
             data = {
                 "text": document["text"],
                 "hashtags": document["hashtags"],
-                "cluster": document["cluster"],
                 "place": document["place_name"],
                 "source": document["source"],
                 "download_time": self.datetime_now,
             }
+            for cluster_key in self.cluster_keys:
+                data[cluster_key] = document[cluster_key]
             self.data_memory_reddit.append(data)
             dict_count["reddit"] += 1
             dict_count["total"] += 1
@@ -104,19 +126,22 @@ class DataVizMongoDB:
         self.count_memory.append(dict_count)
         self.last_query_time = self.datetime_now
 
-    def export_viz_data(self):
+    def export_viz_data(self, cluster_key="cluster"):
         df = pd.DataFrame(
             self.data_memory_twitter + self.data_memory_reddit
         ).sort_values(by="download_time")
 
         pop_cluster = (
-            df.cluster.value_counts().rename_axis("cluster").reset_index(name="counts")
+            df[cluster_key]
+            .value_counts()
+            .rename_axis("cluster")
+            .reset_index(name="counts")
         )
-        most_freq_clusters = pop_cluster[:3].cluster.tolist()
+        most_freq_clusters = pop_cluster[:3][cluster_key].tolist()
         most_freq_hashs = []
         valid = []
         for cl in most_freq_clusters:
-            df_zoom = df[df["cluster"] == cl]
+            df_zoom = df[df[cluster_key] == cl]
             hash_cl = ", ".join(
                 str(v) for v in df_zoom.hashtags if len(str(v)) > 1 and str(v) != "[]"
             )
