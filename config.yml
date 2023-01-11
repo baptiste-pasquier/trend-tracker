@@ -1,10 +1,10 @@
 # Kafka
 bootstrap_endpoint: "localhost:9092"
-time_sleep: 0.2
+time_sleep: 0
 
 # Ingest tweets
 raw_topic: "raw_tweets"
-stream_rule: "news lang:en has:geo -is:retweet"
+stream_rule: "news lang:en -is:retweet sample:5" # has:geo
 
 # Ingest reddit comments
 raw_topic_reddit: "raw_reddit_comments"
