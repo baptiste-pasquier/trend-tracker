@@ -55,13 +55,18 @@ class TweetStream(tweepy.StreamingClient):
             "dt_created": tweet["data"]["created_at"],
             "id_author": tweet["data"]["author_id"],
             "lang": tweet["data"]["lang"],
-            "id_place": tweet["data"]["geo"]["place_id"],
-            "place_country": tweet["includes"]["places"][0]["country"],
-            "place_name": tweet["includes"]["places"][0]["name"],
-            "place_type": tweet["includes"]["places"][0]["place_type"],
             "text": tweet["data"]["text"],
             "source": "twitter",
+            "id_place": tweet["data"]["geo"].get("place_id", None),
         }
+        if tweet_data["id_place"] is not None:
+            tweet_data["place_country"] = tweet["includes"]["places"][0]["country"]
+            tweet_data["place_name"] = tweet["includes"]["places"][0]["name"]
+            tweet_data["place_type"] = tweet["includes"]["places"][0]["place_type"]
+        else:
+            tweet_data["place_country"] = None
+            tweet_data["place_name"] = None
+            tweet_data["place_type"] = None
 
         topic = self.raw_topic
         self.producer.send(topic, tweet_data)
