@@ -19,6 +19,7 @@ plotly = "^5.11.0"
 wordcloud = "^1.8.2.2"
 matplotlib = "^3.6.2"
 pymongo = {extras = ["srv"], version = "^4.3.3"}
+pymongo-schema = "^0.4.1"
 
 
 [tool.poetry.group.dev.dependencies]
