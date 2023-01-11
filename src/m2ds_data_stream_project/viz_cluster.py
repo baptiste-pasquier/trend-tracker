@@ -77,6 +77,20 @@ class DataVizMongoDB:
 
         self.cluster_keys = sorted(cluster_keys)
 
+    def document_to_data(self, document):
+        data = {
+            "text": document["text"],
+            "hashtags": document["hashtags"],
+            "place": document["place_name"],
+            "source": document["source"],
+            "dt_created": document["dt_created"],
+            "dt_storage": document["dt_storage"],
+            "dt_download": self.datetime_now,
+        }
+        for cluster_key in self.cluster_keys:
+            data[cluster_key] = document[cluster_key]
+        return data
+
     def update_data(self):
         self.logger.info("Refreshing data")
         self.datetime_now = datetime.datetime.utcnow()
@@ -96,29 +110,13 @@ class DataVizMongoDB:
         )
 
         for document in new_documents_twitter:
-            data = {
-                "text": document["text"],
-                "hashtags": document["hashtags"],
-                "place": document["place_name"],
-                "source": document["source"],
-                "download_time": self.datetime_now,
-            }
-            for cluster_key in self.cluster_keys:
-                data[cluster_key] = document[cluster_key]
+            data = self.document_to_data(document)
             self.data_memory_twitter.append(data)
             dict_count["twitter"] += 1
             dict_count["total"] += 1
 
         for document in new_documents_reddit:
-            data = {
-                "text": document["text"],
-                "hashtags": document["hashtags"],
-                "place": document["place_name"],
-                "source": document["source"],
-                "download_time": self.datetime_now,
-            }
-            for cluster_key in self.cluster_keys:
-                data[cluster_key] = document[cluster_key]
+            data = self.document_to_data(document)
             self.data_memory_reddit.append(data)
             dict_count["reddit"] += 1
             dict_count["total"] += 1
@@ -127,14 +125,16 @@ class DataVizMongoDB:
         self.last_query_time = self.datetime_now
 
     def export_viz_data(self, cluster_key="cluster"):
-        df = pd.DataFrame(
-            self.data_memory_twitter + self.data_memory_reddit
-        ).sort_values(by="download_time")
+        df = (
+            pd.DataFrame(self.data_memory_twitter + self.data_memory_reddit)
+            .sort_values(by="dt_storage", ignore_index=True)
+            .drop(columns=["dt_storage", "dt_download"])
+        )
 
         pop_cluster = (
             df[cluster_key]
             .value_counts()
-            .rename_axis("cluster")
+            .rename_axis(cluster_key)
             .reset_index(name="counts")
         )
         most_freq_clusters = pop_cluster[:3][cluster_key].tolist()

@@ -73,7 +73,7 @@ while True:
                 st.table(top_loc)
 
             st.markdown("Evolution of the population inside the clusters")
-            fig_pop = px.bar(pop_cluster, x="cluster", y="counts")
+            fig_pop = px.bar(pop_cluster, x=cluster_key, y="counts")
             st.write(fig_pop)
             st.markdown("Evolution of the data sources")
             fig_src = px.line(df_count.loc[1:], x="datetime", y=["reddit", "twitter"])
@@ -95,17 +95,17 @@ while True:
                 with df_1:
                     id_cluster = most_freq_clusters[0]
                     st.markdown(f"Cluster {id_cluster}")
-                    df_zoom = df_data[df_data["cluster"] == id_cluster]
+                    df_zoom = df_data[df_data[cluster_key] == id_cluster].head(100)
                     st.dataframe(df_zoom)
                 with df_2:
                     id_cluster = most_freq_clusters[1]
                     st.markdown(f"Cluster {id_cluster}")
-                    df_zoom = df_data[df_data["cluster"] == id_cluster]
+                    df_zoom = df_data[df_data[cluster_key] == id_cluster].head(100)
                     st.dataframe(df_zoom)
                 with df_3:
                     id_cluster = most_freq_clusters[2]
                     st.markdown(f"Cluster {id_cluster}")
-                    df_zoom = df_data[df_data["cluster"] == id_cluster]
+                    df_zoom = df_data[df_data[cluster_key] == id_cluster].head(100)
                     st.dataframe(df_zoom)
 
     if refresh_time:
