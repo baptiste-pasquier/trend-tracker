@@ -46,7 +46,7 @@ def main():
             log.info("-" * (3 + 80 + 4 + 35 + 4 + 35 + 4 + 7 + 3))
         data = data.value
         log.info(
-            f"""|| {format_text_logging(data["text"], 80, ljust=True)} || {" "*35} || {" "*35} ||"""
+            f"""|| {format_text_logging(data["text"], 80, ljust=True)} || {" "*35} || {" "*35} || {" "*7} ||"""
         )
         data["text"], data["mentions"], data["hashtags"] = text_cleaning(
             data["text"],
