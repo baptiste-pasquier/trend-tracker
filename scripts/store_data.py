@@ -2,21 +2,26 @@ import datetime
 import json
 import logging
 import logging.config
+import os
 
 import pymongo.errors
 from dateutil import parser
 from kafka import KafkaConsumer
 from pymongo import MongoClient
 
-from m2ds_data_stream_project.tools import format_text_logging, load_config
+from m2ds_data_stream_project.tools import (
+    format_text_logging,
+    load_config,
+    load_config_in_environment,
+)
 
 log = logging.getLogger("store_data")
 
 
 def main():
     # Load config
-    secret_config = load_config("secret_config.yml")
     config = load_config("config.yml")
+    load_config_in_environment("secret_config.yml", log)
 
     consumer = KafkaConsumer(
         config["cluster_topic"],
@@ -25,7 +30,7 @@ def main():
         value_deserializer=lambda m: json.loads(m.decode("utf-8")),
     )
 
-    client = MongoClient(secret_config["MONGODB"]["CONNECTION_STRING"])
+    client = MongoClient(os.environ["MONGODB_CONNECTION_STRING"])
     try:
         client.admin.command("ping")
         log.info("Connected")
