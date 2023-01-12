@@ -2,7 +2,7 @@
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://baptiste-pasquier-m2ds-data-stream-project.streamlit.app/)
 [![Build & Test](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml/badge.svg)](https://github.com/baptiste-pasquier/m2ds_data-stream-project/actions/workflows/main.yml)
-[![codecov](https://codecov.io/github/baptiste-pasquier/m2ds_data-stream-project/branch/main/graph/badge.svg)](https://codecov.io/github/baptiste-pasquier/m2ds_data-stream-project)
+[![codecov](https://codecov.io/github/baptiste-pasquier/m2ds_data-stream-project/branch/main/graph/badge.svg)](https://codecov.io/gh/baptiste-pasquier/m2ds_data-stream-project)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Prerequities
