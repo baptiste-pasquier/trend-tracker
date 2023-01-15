@@ -18,6 +18,7 @@ log = logging.getLogger("ingest_reddit")
 
 
 def main():
+    """Scrape raw Reddit data and send it to a Kafka Producer."""
     # Load config
     config = load_config("config.yml")
     load_config_in_environment("secret_config.yml", log)

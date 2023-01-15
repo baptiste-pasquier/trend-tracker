@@ -13,9 +13,7 @@ log = logging.getLogger("ingest_tweets")
 
 
 def main():
-    """
-    Python Scripts to scrape raw twitter data and send it to a Kafka Producer
-    """
+    """Scrape raw Twitter data and send it to a Kafka Producer."""
     # Load config
     config = load_config("config.yml")
     load_config_in_environment("secret_config.yml", log)
