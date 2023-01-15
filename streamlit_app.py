@@ -18,7 +18,10 @@ config = load_config("config.yml")
 load_config_in_environment("secret_config.yml", log)
 
 # Initialize DataViz
-dataviz = DataVizMongoDB(os.environ["MONGODB_CONNECTION_STRING"], log)
+dataviz = DataVizMongoDB(
+    os.environ["MONGODB_CONNECTION_STRING"], config["database_name"], log
+)
+dataviz.connect()
 dataviz.update_data()
 
 st.set_page_config(

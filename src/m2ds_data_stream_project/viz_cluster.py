@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,14 +11,14 @@ from wordcloud import WordCloud
 
 
 def make_wordCloud(words, id_cluster):
-    """Plot a Wordcloud graph
+    """Plot a Wordcloud graph.
 
     Parameters
     ----------
-        words: str
-            corpus to plot
-        nb_cluster: int
-            unique idenitifier of the cluster
+    words: str
+        corpus to plot
+    id_cluster: int
+        unique identifier of the cluster
     """
     wordcloud = WordCloud().generate(words)
     fig, ax = plt.subplots()
@@ -29,22 +30,27 @@ def make_wordCloud(words, id_cluster):
 
 
 class DataVizMongoDB:
+    """Download data from MongoDB database and export data for visualization."""
+
     def __init__(
         self,
-        connection_string,
-        logger,
+        connection_string: str,
+        database_name: str,
+        logger: logging.Logger,
     ):
-        self.client = MongoClient(connection_string)
-        try:
-            self.client.admin.command("ping")
-            logger.info("Connected")
-        except pymongo.errors.ConnectionFailure:
-            logger.error("Server not available")
+        """Init DataVizMongoDB.
 
-        database = self.client["m2ds_data_stream"]
-
-        self.collection_twitter = database["twitter"]
-        self.collection_reddit = database["reddit"]
+        Parameters
+        ----------
+        connection_string : str
+            MongoDB connection string to the database
+        database_name : str
+            Name of the database
+        logger : logging.Logger
+            Logger
+        """
+        self.connection_string = connection_string
+        self.database_name = database_name
 
         self.last_query_time = datetime.datetime(1970, 1, 1)
         self.datetime_now = datetime.datetime.utcnow()
@@ -58,18 +64,34 @@ class DataVizMongoDB:
 
         self.logger = logger
 
+    def connect(self) -> None:
+        """Connect to the database."""
+        self.client = MongoClient(self.connection_string)
+        try:
+            self.client.admin.command("ping")
+            self.logger.info("Connected")
+        except pymongo.errors.ConnectionFailure:
+            self.logger.error("Server not available")
+
+        database = self.client[self.database_name]
+
+        self.collection_twitter = database["twitter"]
+        self.collection_reddit = database["reddit"]
+
         self.get_cluster_keys()
 
-    def is_memory_empty(self):
+    def is_memory_empty(self) -> bool:
+        """Check if the class memory is empty."""
         return len(self.data_memory_twitter) + len(self.data_memory_reddit) == 0
 
-    def get_cluster_keys(self):
+    def get_cluster_keys(self) -> None:
+        """Extract clustering columns from the database."""
         schema = extract_pymongo_client_schema(
             self.client,
-            database_names="m2ds_data_stream",
+            database_names=self.database_name,
         )
         cluster_keys = set()
-        for collection_schema in schema["m2ds_data_stream"].values():
+        for collection_schema in schema[self.database_name].values():
             keys = collection_schema["object"].keys()
             for key in keys:
                 if key.startswith("cluster"):
@@ -77,7 +99,8 @@ class DataVizMongoDB:
 
         self.cluster_keys = sorted(cluster_keys)
 
-    def document_to_data(self, document):
+    def document_to_data(self, document) -> dict:
+        """Convert MongoDB document to Python dict."""
         data = {
             "text": document["text"],
             "hashtags": document["hashtags"],
@@ -91,7 +114,8 @@ class DataVizMongoDB:
             data[cluster_key] = document[cluster_key]
         return data
 
-    def update_data(self):
+    def update_data(self) -> None:
+        """Download last data from the database."""
         self.logger.info("Refreshing data")
         self.datetime_now = datetime.datetime.utcnow()
 
@@ -125,6 +149,19 @@ class DataVizMongoDB:
         self.last_query_time = self.datetime_now
 
     def export_viz_data(self, cluster_key="cluster"):
+        """Export data for live vizualisation.
+
+        Parameters
+        ----------
+        cluster_key : str, optional
+            clustering column in the database, by default "cluster"
+
+        Returns
+        -------
+        _type_
+            _description_
+
+        """
         df = (
             pd.DataFrame(self.data_memory_twitter + self.data_memory_reddit)
             .sort_values(by="dt_storage", ignore_index=True)
