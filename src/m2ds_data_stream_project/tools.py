@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import os
 
@@ -5,7 +7,7 @@ import yaml
 
 
 def load_config(config_path: str) -> dict:
-    """Function to load yaml configuration file
+    """Load yaml configuration file.
 
     Parameters
     ----------
@@ -24,12 +26,15 @@ def load_config(config_path: str) -> dict:
 
 
 def load_config_in_environment(config_path: str, logger: logging.Logger) -> None:
-    """Function to load yaml file in environment variables.
+    """Load yaml file in environment variables.
 
     The yaml file should have the following format:
     ```
     CATEGORY:
         VARNAME: VARIABLE
+        VARNAME2: VARIABLE2
+    CATEGORY2:
+        VARNAME3: VARIABLE3
     ```
 
     Parameters
@@ -37,7 +42,7 @@ def load_config_in_environment(config_path: str, logger: logging.Logger) -> None
     config_path : str
         Path of the yaml configuration file
     logger : logging.Logger
-        _description_
+        Logger
     """
     if os.path.isfile("secret_config.yml"):
         config = load_config(config_path)
@@ -45,8 +50,9 @@ def load_config_in_environment(config_path: str, logger: logging.Logger) -> None
         for category in config.keys():
             for name in config[category]:
                 os.environ[f"{category}_{name}"] = config[category][name]
-        logger.info("Loading secret_config.yml in environment variables.")
-    else:
+        if logger is not None:
+            logger.info("Loading secret_config.yml in environment variables.")
+    elif logger is not None:
         logger.warning(
             "File secret_config.yml not found, using default environment variables."
         )
@@ -55,19 +61,23 @@ def load_config_in_environment(config_path: str, logger: logging.Logger) -> None
 def format_text_logging(
     string: str, pad: int | None = None, ljust: bool = False
 ) -> str:
-    """_summary_
+    """Format text for safe logging.
 
     Parameters
     ----------
     string : str
-        _description_
+         String to format
+    pad : int | None, optional
+        Maximum length of the string, by default None
+    ljust : bool, optional
+        Add spaces at the end of the string until length is pad
 
     Returns
     -------
     str
-        _description_
+        Formatted string
     """
-    string = ascii(string)
+    string = string.encode("ascii", errors="ignore").decode()
     if pad is not None:
         if ljust:
             string = string.ljust(pad)
