@@ -11,9 +11,7 @@ log = logging.getLogger("ingest_tweets")
 
 
 class TweetStream(tweepy.StreamingClient):
-    """
-    Customised Streaming Class
-    """
+    """Customised Streaming Class."""
 
     def __init__(
         self,
@@ -23,7 +21,8 @@ class TweetStream(tweepy.StreamingClient):
         *args,
         **kwargs,
     ):
-        """
+        """Init TweetStream.
+
         Parameters
         ----------
         producer : KafkaProducer
@@ -39,10 +38,11 @@ class TweetStream(tweepy.StreamingClient):
         self.time_sleep = time_sleep
 
     def on_connect(self):
+        """Is called when connected to the API."""
         log.info("Connected")
 
     def on_data(self, raw_data: bytes):
-        """Function called when a new tweet is detected. The data is selected and send to a Producer
+        """Is called when a new tweet is detected. The data is selected and send to a Producer.
 
         Parameters
         ----------
@@ -79,7 +79,7 @@ class TweetStream(tweepy.StreamingClient):
 
 
 def reset_stream(tweet_stream: TweetStream) -> None:
-    """Reset all the rules regarding a Streaming Client (not automatic after stopping execution)
+    """Reset all the rules regarding a Streaming Client (not automatic after stopping execution).
 
     Parameters
     ----------

@@ -12,6 +12,7 @@ log = logging.getLogger("tsf_data")
 
 
 def main():
+    """Preprocess tweets and Reddit messages."""
     # Load config
     config = load_config("config.yml")
 

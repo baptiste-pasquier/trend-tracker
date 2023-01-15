@@ -10,18 +10,17 @@ from nltk.tokenize import word_tokenize
 
 
 def get_wordnet_pos(tag: str) -> str:
-    """_summary_
-    TODO docstring
+    """Convert NLTK pos_tag to WordNet format.
 
     Parameters
     ----------
     tag : str
-        _description_
+        NLTK pos_tag
 
     Returns
     -------
     str
-        _description_
+        Wordnet pos_tag
     """
     if tag.startswith("J"):
         return wordnet.ADJ
@@ -41,7 +40,7 @@ def text_cleaning(
     fg_stop_words: bool = False,
     fg_lemmatization: bool = False,
 ) -> tuple[str, list[str], list[str]]:
-    """Text cleaning of a corpus and extraction of mentions and hashtags
+    """Text cleaning of a corpus and extraction of mentions and hashtags.
 
     Parameters
     ----------
@@ -61,7 +60,6 @@ def text_cleaning(
         mentions : List of mentionned users in the corpus (@'s)
         hashtags : List of hashtags in the corpuss (#'s)
     """
-
     # lowercase
     corpus = corpus.lower()
 

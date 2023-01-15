@@ -11,6 +11,7 @@ log = logging.getLogger("cluster_data")
 
 
 def main():
+    """Streaming clustering of messages."""
     # Load config
     config = load_config("config.yml")
 

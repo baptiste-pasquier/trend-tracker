@@ -19,6 +19,7 @@ log = logging.getLogger("store_data")
 
 
 def main():
+    """Store all the clustering data in a MongoDB database."""
     # Load config
     config = load_config("config.yml")
     load_config_in_environment("secret_config.yml", log)
