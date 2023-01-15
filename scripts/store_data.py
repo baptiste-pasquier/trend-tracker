@@ -37,7 +37,7 @@ def main():
     except pymongo.errors.ConnectionFailure:
         log.error("Server not available")
 
-    database = client["m2ds_data_stream"]
+    database = client[config["database_name"]]
     collections = {"twitter": database["twitter"], "reddit": database["reddit"]}
 
     for i, message in enumerate(consumer):

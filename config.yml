@@ -8,6 +8,7 @@ stream_rule: "news lang:en -is:retweet sample:5" # has:geo
 
 # Ingest reddit comments
 raw_topic_reddit: "raw_reddit_comments"
+subreddit: "news"
 
 # TSF data
 group_id: "main_group"
@@ -18,6 +19,9 @@ clean_topic: "clean_tweets"
 
 # Clustering
 cluster_topic: "cluster_texts"
+
+# Storage
+database_name: "m2ds_data_stream"
 
 # Streamlit
 refresh_time: 5
