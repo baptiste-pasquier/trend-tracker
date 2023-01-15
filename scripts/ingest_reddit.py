@@ -40,7 +40,7 @@ def main():
 
     log.info(f"Authenticated with username {reddit.user.me()}")
 
-    subreddit = reddit.subreddit("news")
+    subreddit = reddit.subreddit(config["subreddit"])
 
     for comment in subreddit.stream.comments():
         try:
