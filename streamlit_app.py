@@ -87,13 +87,31 @@ while True:
                 wc1, wc2, wc3 = st.columns(3)
                 with wc1:
                     words, id_cluster = most_freq_hashs[0], most_freq_clusters[0]
-                    make_wordCloud(words, id_cluster)
+                    make_wordCloud(
+                        df_data[df_data["cluster"] == id_cluster]["text"]
+                        .sample(frac=1)
+                        .head(100)
+                        .sum(),
+                        id_cluster,
+                    )
                 with wc2:
                     words, id_cluster = most_freq_hashs[1], most_freq_clusters[1]
-                    make_wordCloud(words, id_cluster)
+                    make_wordCloud(
+                        df_data[df_data["cluster"] == id_cluster]["text"]
+                        .sample(frac=1)
+                        .head(100)
+                        .sum(),
+                        id_cluster,
+                    )
                 with wc3:
                     words, id_cluster = most_freq_hashs[2], most_freq_clusters[2]
-                    make_wordCloud(words, id_cluster)
+                    make_wordCloud(
+                        df_data[df_data["cluster"] == id_cluster]["text"]
+                        .sample(frac=1)
+                        .head(100)
+                        .sum(),
+                        id_cluster,
+                    )
             if len(most_freq_clusters) == 3:
                 st.markdown("### Detailed Data view")
                 df_1, df_2, df_3 = st.columns(3)
