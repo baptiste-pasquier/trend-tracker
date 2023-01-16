@@ -66,11 +66,13 @@ while True:
 
         nb_cluster = df_data.cluster.nunique()
         nb_data = df_count["total"].sum()
+        nb_data_in_cluster = df_data.cluster.notna().sum()
 
         with placeholder.container():
-            kpi_nb_cl, kpi_nb_t, fig_loc = st.columns(3)
-            kpi_nb_cl.metric(label="Nb Cluster", value=nb_cluster)
-            kpi_nb_t.metric(label="Nb Data", value=nb_data)
+            kpi_1, kpi_2, kpi_3, fig_loc = st.columns([1, 1, 1, 2])
+            kpi_1.metric(label="Nb Cluster", value=nb_cluster)
+            kpi_2.metric(label="Nb Data", value=nb_data)
+            kpi_3.metric(label="Nb Data in clusters", value=nb_data_in_cluster)
             with fig_loc:
                 st.markdown("Evolution of the top locations (tweet only)")
                 st.table(top_loc)
