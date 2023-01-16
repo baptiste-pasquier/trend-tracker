@@ -13,12 +13,13 @@ subreddit: "news"
 # TSF data
 group_id: "main_group"
 negation_words: ["no", "not"]
-fg_stop_words: False
+fg_stop_words: True
 fg_lemmatization: False
 clean_topic: "clean_tweets"
 
 # Clustering
 cluster_topic: "cluster_texts"
+num_clusters: 10
 
 # Storage
 database_name: "trend_tracker"

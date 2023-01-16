@@ -64,7 +64,7 @@ while True:
             cluster_key=cluster_key if cluster_key else "cluster"
         )
 
-        nb_cluster = len(set(df_data.cluster))
+        nb_cluster = df_data.cluster.nunique()
         nb_data = df_count["total"].sum()
 
         with placeholder.container():

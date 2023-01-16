@@ -32,9 +32,13 @@ def main():
     # adj_rand_score = metrics.AdjusterRand()
     # silhouette_score = metrics.Silhouette()
 
-    model = feature_extraction.BagOfWords(ngram_range=(1, 2))
+    model = feature_extraction.BagOfWords(ngram_range=(1, 1))
     model |= cluster.TextClust(
-        real_time_fading=False, fading_factor=0.001, tgap=100, auto_r=True
+        fading_factor=0.001,
+        tgap=100,
+        real_time_fading=False,
+        num_macro=config["num_clusters"],
+        auto_r=True,
     )
 
     for i, data in enumerate(consumer):
@@ -45,7 +49,7 @@ def main():
             )
             log.info("-" * (3 + 100 + 4 + 7 + 4 + 7 + 3))
         data = data.value
-        data["cluster"] = model.predict_one(data["text"])
+        data["cluster"] = model.predict_one(data["text"], type="macro")
         model = model.learn_one(data["text"])
         log.info(
             f"""|| {format_text_logging(data["text"], 100, ljust=True)} || {str(data["cluster"]).center(7)} || {data["source"].center(7)} ||"""
