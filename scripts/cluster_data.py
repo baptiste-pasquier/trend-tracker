@@ -50,7 +50,10 @@ def main():
             log.info("-" * (3 + 100 + 4 + 7 + 4 + 7 + 3))
         data = data.value
         data["cluster"] = model.predict_one(data["text"], type="macro")
-        model = model.learn_one(data["text"])
+        try:
+            model = model.learn_one(data["text"])
+        except UnboundLocalError:
+            pass
         log.info(
             f"""|| {format_text_logging(data["text"], 100, ljust=True)} || {str(data["cluster"]).center(7)} || {data["source"].center(7)} ||"""
         )
