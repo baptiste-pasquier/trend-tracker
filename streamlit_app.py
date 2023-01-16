@@ -6,7 +6,7 @@ import time
 import plotly.express as px
 import streamlit as st
 
-from trend_tracker.tools import load_config, load_config_in_environment
+from trend_tracker.utils import load_config, load_config_in_environment
 from trend_tracker.viz_cluster import DataVizMongoDB, make_wordCloud
 
 log = logging.getLogger("streamlit")

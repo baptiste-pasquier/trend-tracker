@@ -5,7 +5,7 @@ import logging.config
 from kafka import KafkaConsumer, KafkaProducer
 from river import cluster, feature_extraction
 
-from trend_tracker.tools import format_text_logging, load_config
+from trend_tracker.utils import format_text_logging, load_config
 
 log = logging.getLogger("cluster_data")
 

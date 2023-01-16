@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from trend_tracker.tools import format_text_logging, load_config
+from trend_tracker.utils import format_text_logging, load_config
 
 
 @pytest.fixture

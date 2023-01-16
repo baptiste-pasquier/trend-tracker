@@ -9,7 +9,7 @@ from dateutil import parser
 from kafka import KafkaConsumer
 from pymongo import MongoClient
 
-from trend_tracker.tools import (
+from trend_tracker.utils import (
     format_text_logging,
     load_config,
     load_config_in_environment,

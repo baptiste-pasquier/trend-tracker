@@ -8,7 +8,7 @@ from datetime import datetime
 import praw
 from kafka import KafkaProducer
 
-from trend_tracker.tools import (
+from trend_tracker.utils import (
     format_text_logging,
     load_config,
     load_config_in_environment,
