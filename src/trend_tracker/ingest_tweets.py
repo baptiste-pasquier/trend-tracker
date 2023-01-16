@@ -5,7 +5,7 @@ import time
 import tweepy
 from kafka import KafkaProducer
 
-from m2ds_data_stream_project.tools import format_text_logging
+from trend_tracker.tools import format_text_logging
 
 log = logging.getLogger("ingest_tweets")
 

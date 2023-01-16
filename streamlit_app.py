@@ -6,8 +6,8 @@ import time
 import plotly.express as px
 import streamlit as st
 
-from m2ds_data_stream_project.tools import load_config, load_config_in_environment
-from m2ds_data_stream_project.viz_cluster import DataVizMongoDB, make_wordCloud
+from trend_tracker.tools import load_config, load_config_in_environment
+from trend_tracker.viz_cluster import DataVizMongoDB, make_wordCloud
 
 log = logging.getLogger("streamlit")
 logging.config.fileConfig("logging.ini")
@@ -25,12 +25,12 @@ dataviz.connect()
 dataviz.update_data()
 
 st.set_page_config(
-    page_title="Real-Time Dashboard",
+    page_title="Trend-Tracker dashboard",
     page_icon="✅",
     layout="wide",
 )
 # dashboard title
-st.title("Real-Time / Live Data News Dashboard")
+st.title("Trend-Tracker / Live Twitter & Reddit dashboard")
 
 with st.sidebar:
     cluster_key = st.selectbox("Cluster selection", dataviz.cluster_keys)

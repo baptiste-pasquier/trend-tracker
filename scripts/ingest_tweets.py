@@ -6,8 +6,8 @@ import os
 import tweepy
 from kafka import KafkaProducer
 
-from m2ds_data_stream_project.ingest_tweets import TweetStream, reset_stream
-from m2ds_data_stream_project.tools import load_config, load_config_in_environment
+from trend_tracker.ingest_tweets import TweetStream, reset_stream
+from trend_tracker.tools import load_config, load_config_in_environment
 
 log = logging.getLogger("ingest_tweets")
 

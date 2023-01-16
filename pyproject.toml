@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "m2ds-data-stream-project"
+name = "trend-tracker"
 version = "0.1.0"
 description = ""
 authors = ["Baptiste Pasquier <pasquierbaptiste@hotmail.fr>"]
 readme = "README.md"
-packages = [{include = "m2ds_data_stream_project", from = "src"}]
+packages = [{include = "trend_tracker", from = "src"}]
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<3.9.7 || >3.9.7,<4.0"

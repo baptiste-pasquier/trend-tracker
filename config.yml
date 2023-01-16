@@ -21,7 +21,7 @@ clean_topic: "clean_tweets"
 cluster_topic: "cluster_texts"
 
 # Storage
-database_name: "m2ds_data_stream"
+database_name: "trend_tracker"
 
 # Streamlit
 refresh_time: 5

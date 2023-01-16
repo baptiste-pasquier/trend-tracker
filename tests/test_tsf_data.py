@@ -1,4 +1,4 @@
-from m2ds_data_stream_project.tsf_data import text_cleaning
+from trend_tracker.tsf_data import text_cleaning
 
 
 def test_text_cleaning_lowercase():

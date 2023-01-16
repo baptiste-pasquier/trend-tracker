@@ -5,8 +5,8 @@ import logging.config
 import nltk
 from kafka import KafkaConsumer, KafkaProducer
 
-from m2ds_data_stream_project.tools import format_text_logging, load_config
-from m2ds_data_stream_project.tsf_data import text_cleaning
+from trend_tracker.tools import format_text_logging, load_config
+from trend_tracker.tsf_data import text_cleaning
 
 log = logging.getLogger("tsf_data")
 
