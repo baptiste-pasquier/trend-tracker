@@ -23,6 +23,7 @@ num_clusters: 10
 
 # Storage
 database_name: "trend_tracker"
+empty_database: True
 
 # Streamlit
 refresh_time: 5

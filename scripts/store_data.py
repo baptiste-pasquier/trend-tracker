@@ -38,10 +38,11 @@ def main():
     except pymongo.errors.ConnectionFailure:
         log.error("Server not available")
 
-    client.drop_database(config["database_name"])
-
     database = client[config["database_name"]]
     collections = {"twitter": database["twitter"], "reddit": database["reddit"]}
+    if config["empty_database"]:
+        for col in collections.values():
+            col.delete_many({})
 
     for i, message in enumerate(consumer):
         if i % 15 == 0:

@@ -59,9 +59,6 @@ class DataVizMongoDB:
         self.data_memory_reddit = []
         self.count_memory = []
 
-        self.df_data = pd.DataFrame([])
-        self.df_count = pd.DataFrame([])
-
         self.logger = logger
 
     def connect(self) -> None:
@@ -73,16 +70,40 @@ class DataVizMongoDB:
         except pymongo.errors.ConnectionFailure:
             self.logger.error("Server not available")
 
-        database = self.client[self.database_name]
+        self.database = self.client[self.database_name]
 
-        self.collection_twitter = database["twitter"]
-        self.collection_reddit = database["reddit"]
+        self.collection_twitter = self.database["twitter"]
+        self.collection_reddit = self.database["reddit"]
 
         self.get_cluster_keys()
 
+    def get_memory_size(self) -> int:
+        """Calculate the size of the class memory."""
+        return len(self.data_memory_twitter) + len(self.data_memory_reddit)
+
+    def get_database_size(self) -> int:
+        """Calculate the size of the database."""
+        return self.collection_twitter.count_documents(
+            {}
+        ) + self.collection_reddit.count_documents({})
+
     def is_memory_empty(self) -> bool:
         """Check if the class memory is empty."""
-        return len(self.data_memory_twitter) + len(self.data_memory_reddit) == 0
+        memory_size = self.get_memory_size()
+        return memory_size == 0
+
+    def empty_memory(self) -> None:
+        """Empty the class memory."""
+        self.data_memory_twitter = []
+        self.data_memory_reddit = []
+        self.count_memory = []
+
+    def empty_memory_with_database(self) -> None:
+        """Empty the class memory if the database has been emptied."""
+        memory_size = self.get_memory_size()
+        database_size = self.get_database_size()
+        if memory_size > database_size:
+            self.empty_memory()
 
     def get_cluster_keys(self) -> None:
         """Extract clustering columns from the database."""
@@ -116,6 +137,8 @@ class DataVizMongoDB:
 
     def update_data(self) -> None:
         """Download last data from the database."""
+        self.empty_memory_with_database()
+
         self.logger.info("Refreshing data")
         self.datetime_now = datetime.datetime.utcnow()
 
