@@ -1,0 +1,75 @@
+version: '3.8'
+services:
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    # ports:
+    #   - 2181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    # ports:
+    #   - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+  ingest_tweets:
+    build:
+      context: ./
+      dockerfile: ./all_services/ingest_tweets/Dockerfile
+    container_name: ingest_tweets
+    depends_on:
+      - kafka
+    environment:
+      TWITTER_BEARER_TOKEN: ${TWITTER_BEARER_TOKEN}
+
+  ingest_reddit:
+    build:
+      context: ./
+      dockerfile: ./all_services/ingest_reddit/Dockerfile
+    container_name: ingest_reddit
+    depends_on:
+      - kafka
+    environment:
+      REDDIT_CLIENT_ID: ${REDDIT_CLIENT_ID}
+      REDDIT_CLIENT_SECRET: ${REDDIT_CLIENT_SECRET}
+      REDDIT_PASSWORD: ${REDDIT_PASSWORD}
+      REDDIT_USER_AGENT: ${REDDIT_USER_AGENT}
+      REDDIT_USERNAME: ${REDDIT_USERNAME}
+
+  tsf_data:
+    build:
+      context: ./
+      dockerfile: ./all_services/tsf_data/Dockerfile
+    container_name: tsf_data
+    depends_on:
+      - kafka
+
+  cluster_data:
+    build:
+      context: ./
+      dockerfile: ./all_services/cluster_data/Dockerfile
+    container_name: cluster_data
+    depends_on:
+      - kafka
+
+  store_data:
+    build:
+      context: ./
+      dockerfile: ./all_services/store_data/Dockerfile
+    container_name: store_data
+    depends_on:
+      - kafka
+    environment:
+      MONGODB_CONNECTION_STRING: ${MONGODB_CONNECTION_STRING}
