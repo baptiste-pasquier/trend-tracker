@@ -1,4 +1,4 @@
-from trend_tracker.tsf_data import text_cleaning
+from utils import text_cleaning
 
 
 def test_text_cleaning_lowercase():

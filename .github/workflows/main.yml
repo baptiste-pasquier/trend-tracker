@@ -40,13 +40,13 @@ jobs:
       - name: Check Poetry lock file consistency
         run: poetry lock --check
 
-  build-pip:
-    runs-on: ${{ matrix.os }}
+  build-service:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.10"]
+        service: ["cluster_data", "ingest_reddit", "ingest_tweets", "store_data", "tsf_data"]
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
@@ -55,16 +55,16 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'pip'
-        cache-dependency-path: 'pyproject.toml'
 
     - name: Install dependencies with pip
       run: |
         python -m pip install --upgrade pip
         python -m pip install .
+        python -m pip install -r ./all_services/${{ matrix.service }}/requirements.txt
         python -m pip install pytest
 
     - name: Test with pytest
+      working-directory: ./all_services/${{ matrix.service }}
       run: pytest
 
   build-poetry:
