@@ -1,6 +1,7 @@
 import json
 import logging
 import logging.config
+import time
 
 import nltk
 from kafka import KafkaConsumer, KafkaProducer
@@ -24,6 +25,8 @@ def main():
     nltk.download("averaged_perceptron_tagger")
     nltk.download("wordnet")
 
+    # Define Kafka producer
+    time.sleep(config["time_wait_for_kafka"])
     producer = KafkaProducer(
         bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf-8"),

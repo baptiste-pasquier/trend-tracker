@@ -6,13 +6,10 @@ import time
 from datetime import datetime
 
 import praw
+from dotenv import load_dotenv
 from kafka import KafkaProducer
 
-from trend_tracker.utils import (
-    format_text_logging,
-    load_config,
-    load_config_in_environment,
-)
+from trend_tracker.utils import format_text_logging, load_config
 
 log = logging.getLogger("ingest_reddit")
 
@@ -21,9 +18,10 @@ def main():
     """Scrape raw Reddit data and send it to a Kafka Producer."""
     # Load config
     config = load_config("config.yml")
-    load_config_in_environment("secret_config.yml", log)
+    load_dotenv()
 
     # Define Kafka producer
+    time.sleep(config["time_wait_for_kafka"])
     producer = KafkaProducer(
         bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf8"),

@@ -1,0 +1,9 @@
+[run]
+source =
+    src/
+    all_services/cluster_data/
+    all_services/ingest_reddit/
+    all_services/ingest_tweets/
+    all_services/store_data/
+    all_services/tsf_data/
+omit = */tests/*, *app.py

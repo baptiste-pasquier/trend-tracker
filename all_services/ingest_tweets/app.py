@@ -2,12 +2,14 @@ import json
 import logging
 import logging.config
 import os
+import time
 
 import tweepy
+from dotenv import load_dotenv
 from kafka import KafkaProducer
 from utils import TweetStream, reset_stream
 
-from trend_tracker.utils import load_config, load_config_in_environment
+from trend_tracker.utils import load_config
 
 log = logging.getLogger("ingest_tweets")
 
@@ -16,9 +18,10 @@ def main():
     """Scrape raw Twitter data and send it to a Kafka Producer."""
     # Load config
     config = load_config("config.yml")
-    load_config_in_environment("secret_config.yml", log)
+    load_dotenv()
 
     # Define Kafka producer
+    time.sleep(config["time_wait_for_kafka"])
     producer = KafkaProducer(
         bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf8"),

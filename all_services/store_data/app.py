@@ -3,17 +3,15 @@ import json
 import logging
 import logging.config
 import os
+import time
 
 import pymongo.errors
 from dateutil import parser
+from dotenv import load_dotenv
 from kafka import KafkaConsumer
 from pymongo import MongoClient
 
-from trend_tracker.utils import (
-    format_text_logging,
-    load_config,
-    load_config_in_environment,
-)
+from trend_tracker.utils import format_text_logging, load_config
 
 log = logging.getLogger("store_data")
 
@@ -22,8 +20,9 @@ def main():
     """Store all the clustering data in a MongoDB database."""
     # Load config
     config = load_config("config.yml")
-    load_config_in_environment("secret_config.yml", log)
+    load_dotenv()
 
+    time.sleep(config["time_wait_for_kafka"])
     consumer = KafkaConsumer(
         config["cluster_topic"],
         bootstrap_servers=config["bootstrap_endpoint"],

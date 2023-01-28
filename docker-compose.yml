@@ -28,6 +28,7 @@ services:
     build:
       context: ./
       dockerfile: ./all_services/ingest_tweets/Dockerfile
+    image: baptistepasquier/trend-tracker-ingest-tweets:latest
     container_name: ingest_tweets
     depends_on:
       - kafka
@@ -38,6 +39,7 @@ services:
     build:
       context: ./
       dockerfile: ./all_services/ingest_reddit/Dockerfile
+    image: baptistepasquier/trend-tracker-ingest-reddit:latest
     container_name: ingest_reddit
     depends_on:
       - kafka
@@ -52,6 +54,7 @@ services:
     build:
       context: ./
       dockerfile: ./all_services/tsf_data/Dockerfile
+    image: baptistepasquier/trend-tracker-tsf-data:latest
     container_name: tsf_data
     depends_on:
       - kafka
@@ -60,6 +63,7 @@ services:
     build:
       context: ./
       dockerfile: ./all_services/cluster_data/Dockerfile
+    image: baptistepasquier/trend-tracker-cluster-data:latest
     container_name: cluster_data
     depends_on:
       - kafka
@@ -68,6 +72,7 @@ services:
     build:
       context: ./
       dockerfile: ./all_services/store_data/Dockerfile
+    image: baptistepasquier/trend-tracker-store-data:latest
     container_name: store_data
     depends_on:
       - kafka

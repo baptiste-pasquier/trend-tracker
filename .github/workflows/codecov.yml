@@ -22,7 +22,10 @@ jobs:
         run: poetry install --no-interaction
 
       - name: Run tests and collect coverage
-        run: poetry run pytest --cov src --cov-report xml:coverage.xml
+        run: |
+          poetry run coverage run -m pytest
+          poetry run coverage report
+          poetry run coverage xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

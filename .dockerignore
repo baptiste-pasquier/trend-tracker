@@ -163,3 +163,5 @@ cython_debug/
 secret_config.yml
 logs/*
 !logs/.gitkeep
+
+docker-compose.yml

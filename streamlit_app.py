@@ -5,8 +5,9 @@ import time
 
 import plotly.express as px
 import streamlit as st
+from dotenv import load_dotenv
 
-from trend_tracker.utils import load_config, load_config_in_environment
+from trend_tracker.utils import load_config
 from trend_tracker.viz_cluster import DataVizMongoDB, make_wordCloud
 
 log = logging.getLogger("streamlit")
@@ -15,7 +16,7 @@ logging.config.fileConfig("logging.ini")
 
 # Load config
 config = load_config("config.yml")
-load_config_in_environment("secret_config.yml", log)
+load_dotenv()
 
 # Initialize DataViz
 dataviz = DataVizMongoDB(

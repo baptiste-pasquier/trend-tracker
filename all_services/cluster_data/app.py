@@ -1,6 +1,7 @@
 import json
 import logging
 import logging.config
+import time
 
 from kafka import KafkaConsumer, KafkaProducer
 from river import cluster, feature_extraction
@@ -15,6 +16,8 @@ def main():
     # Load config
     config = load_config("config.yml")
 
+    # Define Kafka producer
+    time.sleep(config["time_wait_for_kafka"])
     producer = KafkaProducer(
         bootstrap_servers=config["bootstrap_endpoint"],
         value_serializer=lambda m: json.dumps(m).encode("utf8"),
