@@ -1,6 +1,8 @@
 # Kafka
-bootstrap_endpoint: "localhost:9092"
+bootstrap_endpoint: "kafka:9092"
+# bootstrap_endpoint: "localhost:9092"  # for local development
 time_sleep: 0
+time_wait_for_kafka: 30
 
 # Ingest tweets
 raw_topic: "raw_tweets"
